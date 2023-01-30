@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: "Bargemo";
+    src: url("../../Assets/Bargemo_Heading/Bargemo-Regular.otf");
+  }
+  
+  @font-face {
+    font-family: "Holipop";
+    src: url("../../Assets/Holipop_Title/Holipop.otf");
+  }
+  
+  @font-face {
+    font-family: "Petrona_ExtraLight";
+    src: url("../../Assets/Petrona_Body/static/Petrona-ExtraLight.ttf");
+  }
+  
+  @font-face {
+    font-family: "Petrona_Light";
+    src: url("../../Assets/Petrona_Body/static/Petrona-Light.ttf");
+  }
+  
+  @font-face {
+    font-family: "Petrona_Regular";
+    src: url("../../Assets/Petrona_Body/static/Petrona-Regular.ttf");
+  }
+  
+  @font-face {
+    font-family: "Petrona_Thin";
+    src: url("../../Assets/Petrona_Body/static/Petrona-Thin.ttf");
+  }
+  
+  @font-face {
+    font-family: "Petrona_Italic";
+    src: url("../../Assets/Petrona_Body/static/Petrona-Italic.ttf");
+  }
+  
+  @font-face {
+    font-family: "Petrona_Thin_Italic";
+    src: url("../../Assets/Petrona_Body/static/Petrona-ThinItalic.ttf");
+  }
