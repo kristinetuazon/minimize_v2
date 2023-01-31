@@ -1,4 +1,3 @@
-import { resolveHref } from "next/dist/shared/lib/router/router";
 import React from "react";
 import Link from "next/link";
 
@@ -17,8 +16,7 @@ export default function Button(props: Props) {
         id="link"
         className=" mt-10 border-2 bg-supple p-5 font-heading text-lg uppercase shadow-md"
       >
-        {" "}
-        {children}{" "}
+        {children}
       </Link>
     </button>
   );

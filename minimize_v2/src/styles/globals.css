@@ -41,3 +41,10 @@
     font-family: "Petrona_Thin_Italic";
     src: url("../../Assets/Petrona_Body/static/Petrona-ThinItalic.ttf");
   }
+
+  .flexCenter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
