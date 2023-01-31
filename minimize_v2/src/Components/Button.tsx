@@ -14,7 +14,7 @@ export default function Button(props: Props) {
       <Link
         href={page}
         id="link"
-        className=" mt-10 border-2 bg-supple p-5 font-heading text-lg uppercase shadow-md"
+        className=" mt-10 border-2 bg-offWhite hover:bg-powder p-5 font-heading text-lg uppercase shadow-md"
       >
         {children}
       </Link>

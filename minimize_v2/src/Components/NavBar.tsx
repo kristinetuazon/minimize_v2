@@ -7,16 +7,12 @@ import { gsap, Power0 } from "gsap";
 type Props = {};
 
 export default function NavBar({}: Props) {
-
   const [isHover, setIsHover] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-
-  useEffect(() => { 
-
-    console.log(isHover)
-  },[isHover])
-  
+  useEffect(() => {
+    console.log(isHover);
+  }, [isHover]);
 
   const handleMouseEnter = () => {
     setIsHover(true);
@@ -30,18 +26,21 @@ export default function NavBar({}: Props) {
     setIsOpen(true);
   };
 
-
-
   return (
     <>
       <div className="absolute bg-fadedPink">
-        <Image id="logo" alt="logo" src={logo} height="50" className="m-7" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}/>
+        <Image
+          id="logo"
+          alt="logo"
+          src={logo}
+          height="50"
+          className="m-7"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
       </div>
 
-      {isOpen? 
-      <div>
-
-      </div>: "" }
+      {isOpen ? <div></div> : ""}
     </>
   );
 }
