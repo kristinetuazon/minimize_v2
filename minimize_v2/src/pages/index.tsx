@@ -77,10 +77,10 @@ const Home: NextPage = () => {
       </main>
       <div className="flexCenter w-screen h-screen bg-fadedPink">
       <Container title="too much stuff?">
-        <p>Have you ever wondered why you had so much stuff? Marie Kondo put it so simply as: does these things give you joy? Minimize is a web application that will help you declutter your life tinder-style. It means you could take an inventory of items you wish to sort, use a Tinder mechanism to figure out which items you want or don't want to keep and act on the results.</p></Container>
+        Have you ever wondered why you had so much stuff? Marie Kondo put it so simply as: does these things give you joy? Minimize is a web application that will help you declutter your life tinder-style. It means you could take an inventory of items you wish to sort, swipe or drag left or right to figure out which items you want or don't want to keep and act on the results.</Container>
   
 
-  <Button page="/sort"> click here to start </Button>
+  <Button page="/list"> click here to start </Button>
       </div>
     </>
   );
