@@ -24,9 +24,6 @@ const Home: NextPage = () => {
     // });
   }, []);
 
-
-
-
   return (
     <>
       <Head>
@@ -60,7 +57,7 @@ const Home: NextPage = () => {
             height="50"
             className="logo pb-2"
           />
-           <Image
+          <Image
             id="logo"
             alt="logo"
             src={logo}
@@ -75,12 +72,16 @@ const Home: NextPage = () => {
           curate, sort, free your life
         </span>
       </main>
-      <div className="flexCenter w-screen h-screen bg-fadedPink">
-      <Container title="too much stuff?">
-        Have you ever wondered why you had so much stuff? Marie Kondo put it so simply as: does these things give you joy? Minimize is a web application that will help you declutter your life tinder-style. It means you could take an inventory of items you wish to sort, swipe or drag left or right to figure out which items you want or don't want to keep and act on the results.</Container>
-  
+      <div className="flexCenter h-screen w-screen bg-fadedPink">
+        <Container title="Minimize is...">
+          <p className="font-bodyRegular text-center">Have you ever wondered why you had so much stuff? <br/><br/>  Minimize is a web
+          application that will help you declutter your life tinder-style. It
+          means you could take an inventory of items you wish to sort, swipe or
+          drag left or right to figure out which items you want or don't want to
+          keep and act on the results.</p>
+        </Container>
 
-  <Button page="/list"> click here to start </Button>
+        <Button page="/list"> click here to start </Button>
       </div>
     </>
   );

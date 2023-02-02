@@ -1,7 +1,8 @@
-import { ChangeEvent, ReactElement, useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 export function useList(list: string[]) {
 const [listItem, setListItem] = useState<string>("");
+const [selectedItem, setSelectedItem] = useState<string>("");
 
 const listItemHandler = (e:ChangeEvent) => {
     setListItem((e.target as HTMLInputElement).value);
@@ -12,7 +13,7 @@ const listItemHandler = (e:ChangeEvent) => {
   };
 
   const deleteFrom = () => {
-    list.splice(list.indexOf(listItem), 1);
+    list.splice(list.indexOf(selectedItem), 1);
   };
 
   const resetInput = () => {
@@ -22,6 +23,8 @@ const listItemHandler = (e:ChangeEvent) => {
 
   return {
     listItem,
+    selectedItem,
+    setSelectedItem,
     setListItem,
     addOn,
     deleteFrom,
