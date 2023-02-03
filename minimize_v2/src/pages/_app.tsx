@@ -6,7 +6,7 @@ import "../styles/globals.css";
 import { useState } from "react";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const {listItem, selectedItem, setSelectedItem, setListItem, addOn, deleteFrom, listItemHandler, resetInput} = useList([]);
+  const { selectedItem, setSelectedItem, addOn, deleteFrom, list} = useList([]);
   const [listName, setListName] = useState<string>("");
   const [listDescription, setListDescription] = useState<string>("");
 
@@ -14,14 +14,14 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <GlobalContext.Provider value={{
       //fromHook
-      listItem: listItem,
+      list: list,
+      // listItem: listItem,
       selectedItem: selectedItem,
       setSelectedItem: setSelectedItem,
-      setListItem: setListItem,
+      // setListItem: setListItem,
       addOn: addOn,
       deleteFrom: deleteFrom,
-      listItemHandler: listItemHandler,
-      resetInput: resetInput,
+      // resetInput: resetInput,
       //App Level States
       listName: listName,
       setListName: setListName,

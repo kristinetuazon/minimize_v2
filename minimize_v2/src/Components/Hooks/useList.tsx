@@ -1,34 +1,23 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 
-export function useList(list: string[]) {
-const [listItem, setListItem] = useState<string>("");
-const [selectedItem, setSelectedItem] = useState<string>("");
+export function useList(list:string[]) {
 
-const listItemHandler = (e:ChangeEvent) => {
-    setListItem((e.target as HTMLInputElement).value);
-}
-
-  const addOn = () => {
+console.log (list, "✨")
+  const addOn = (listItem:string) => {
+    console.log(listItem, "🧩")
     list.push(listItem);
+    console.log(list, "🍟")
   };
 
-  const deleteFrom = () => {
+  const deleteFrom = (selectedItem:string) => {
     list.splice(list.indexOf(selectedItem), 1);
   };
 
-  const resetInput = () => {
-    setListItem("");
-  }
 
 
   return {
-    listItem,
-    selectedItem,
-    setSelectedItem,
-    setListItem,
+    list,
     addOn,
     deleteFrom,
-    listItemHandler,
-    resetInput
 };
 }
