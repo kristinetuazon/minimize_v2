@@ -1,6 +1,7 @@
 export type Item = {
     id: string;
     name: string;
+    picture?: string;
 }
 
 export type List = {

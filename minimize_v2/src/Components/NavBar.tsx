@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import logo from "/public/square-svgrepo-com.svg";
 import Image from "next/image";
+import Link from "next/link";
 import { gsap, Power0 } from "gsap";
 
 type Props = {};
@@ -29,7 +30,7 @@ export default function NavBar({}: Props) {
   return (
     <>
       <div className="absolute bg-fadedPink">
-        <Image
+        <Link href={"/"}><Image
           id="logo"
           alt="logo"
           src={logo}
@@ -38,6 +39,7 @@ export default function NavBar({}: Props) {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         />
+        </Link>
       </div>
 
       {isOpen ? <div></div> : ""}

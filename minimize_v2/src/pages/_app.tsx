@@ -4,24 +4,28 @@ import GlobalContext from "../Components/GlobalContext";
 import { useList } from "../Components/Hooks/useList";
 import "../styles/globals.css";
 import { useState } from "react";
+import { type Item, type List } from "../types/global";
+import { v4 as uuidv4 } from 'uuid';
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const { selectedItem, setSelectedItem, addOn, deleteFrom, list} = useList([]);
+  const {  addOn, deleteFrom, list} = useList([]);
   const [listName, setListName] = useState<string>("");
   const [listDescription, setListDescription] = useState<string>("");
+
+  const LISTOBJECT: List  = {
+    id: uuidv4(),
+    listName: listName,
+    description: listDescription,
+    listOfItems: list
+  }
 
 
   return (
     <GlobalContext.Provider value={{
       //fromHook
       list: list,
-      // listItem: listItem,
-      selectedItem: selectedItem,
-      setSelectedItem: setSelectedItem,
-      // setListItem: setListItem,
       addOn: addOn,
       deleteFrom: deleteFrom,
-      // resetInput: resetInput,
       //App Level States
       listName: listName,
       setListName: setListName,

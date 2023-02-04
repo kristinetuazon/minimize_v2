@@ -2,12 +2,16 @@ import React, { useContext, useState } from "react";
 import Container from "../../Components/Container";
 import NavBar from "../../Components/NavBar";
 import GlobalContext from "../../Components/GlobalContext";
+import ListComponent from "../../Components/List";
+import Button from "../../Components/Button";
+import { type Item, type List } from "../../types/global";
+import { v4 as uuidv4 } from 'uuid';
 
 type Props = {};
 
 export default function List({}: Props) {
   const [listItem, setListItem] = useState<string>("");
-  const [selectedItem, setSelectedItem] = useState<string>("");
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const value = useContext(GlobalContext);
   const {
     list,
@@ -19,8 +23,11 @@ export default function List({}: Props) {
     setListDescription,
   } = value;
 
+  const DATAOBJECT: Item = { id: uuidv4(), name: listItem };
+
   console.log(listItem, "✨");
   console.log(list);
+  console.log(DATAOBJECT)
 
   return (
     <>
@@ -81,16 +88,18 @@ export default function List({}: Props) {
                 />
                 <button
                   onClick={() => {
-                    addOn(listItem);
+                    addOn(DATAOBJECT);
+                    setListItem("");
                   }}
                   className="rounded-full border-2 border-blackish bg-fadedPink p-2 hover:bg-powder"
                 >
                   <p className="font-body text-2xl"> + </p>
                 </button>
-                {/* <button className="border-2 p-3 rounded-full mt-5 border-blackish bg-offWhite hover:bg-powder"> <p className="font-body text-3xl">-</p></button> */}
               </div>
+              <ListComponent />
             </div>
           </Container>
+          <Button page="/">next</Button>
         </div>
       </main>
     </>
