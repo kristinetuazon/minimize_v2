@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import logo from "/public/square-svgrepo-com.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { gsap, Power0 } from "gsap";
+// import { gsap, Power0 } from "gsap";
 
 type Props = {};
 

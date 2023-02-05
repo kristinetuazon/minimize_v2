@@ -11,12 +11,10 @@ type Props = {};
 
 export default function List({}: Props) {
   const [listItem, setListItem] = useState<string>("");
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const value = useContext(GlobalContext);
   const {
     list,
     addOn,
-    deleteFrom,
     listName,
     setListName,
     listDescription,
@@ -96,7 +94,7 @@ export default function List({}: Props) {
                   <p className="font-body text-2xl"> + </p>
                 </button>
               </div>
-              <ListComponent />
+              {list.length > 0? <ListComponent /> : ""}
             </div>
           </Container>
           <Button page="/">next</Button>
