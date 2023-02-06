@@ -4,13 +4,14 @@ import Link from "next/link";
 type Props = {
   children: string;
   page: string;
+  action?: () => void;
 };
 
 export default function Button(props: Props) {
-  const { children, page } = props;
+  const { children, page, action} = props;
 
   return (
-    <button>
+    <button onClick={action}>
       <Link
         href={page}
         id="link"

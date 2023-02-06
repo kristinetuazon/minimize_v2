@@ -11,9 +11,9 @@ export default function NavBar({}: Props) {
   const [isHover, setIsHover] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    console.log(isHover);
-  }, [isHover]);
+  // useEffect(() => {
+  //   console.log(isHover);
+  // }, [isHover]);
 
   const handleMouseEnter = () => {
     setIsHover(true);

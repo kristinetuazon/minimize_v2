@@ -25,8 +25,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <GlobalContext.Provider value={{
       //Hook States
       localStorage: localStorage,
-      useLocalStorage: useLocalStorage,
+      setLocalStorage: setLocalStorage,
       //App Level States
+      LISTOBJECT: LISTOBJECT,
       list:list,
       setList:setList,
       listName: listName,

@@ -19,6 +19,9 @@ export default function List({}: Props) {
     setListName,
     listDescription,
     setListDescription,
+    LISTOBJECT,
+    localStorage,
+    setLocalStorage
   } = value;
 
   function handleAddItem() {
@@ -29,6 +32,12 @@ export default function List({}: Props) {
 
   function deleteFrom(id: string) {
     setList(list.filter((item: Item) => item.id !== id));
+  }
+
+  console.log(LISTOBJECT, "🙇🏻‍♂️");
+  function handleSubmit() {
+    setLocalStorage(LISTOBJECT);
+    console.log(localStorage, "🧩")
   }
 
   return (
@@ -102,7 +111,7 @@ export default function List({}: Props) {
               )}
             </div>
           </Container>
-          <Button page="/">next</Button>
+          <Button action={handleSubmit} page="/sort">next</Button>
         </div>
       </main>
     </>
