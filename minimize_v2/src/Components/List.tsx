@@ -1,22 +1,20 @@
-import React, {useState, useContext} from 'react'
-import ListItem from "../Components/ListItem"
-import { type Item } from '../types/global'
-// import GlobalContext from './GlobalContext'
+import React from "react";
+import ListItem from "../Components/ListItem";
+import { type Item } from "../types/global";
+//import GlobalContext from './GlobalContext'
 
-type Props = {}
+type Props = { deleteFrom: (id: string) => void; list: Item[] };
 
 const ListComponent = (props: Props) => {
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-
-
-
-
+  const { deleteFrom, list } = props;
 
   return (
-    <ul className="bg-fadedPink rounded-md flexCenter border-2 p-3 mt-5 w-full overflow-scroll max-h-[300]">
-        <ListItem/>
+    <div className="flexCenter mt-5 max-h-[200px] w-full overflow-scroll rounded-md border-2 bg-fadedPink p-3">
+    <ul>
+      <ListItem deleteFrom={deleteFrom} list={list} />
     </ul>
-  )
-}
+    </div>
+  );
+};
 
 export default ListComponent;

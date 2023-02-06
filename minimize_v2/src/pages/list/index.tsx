@@ -5,7 +5,7 @@ import GlobalContext from "../../Components/GlobalContext";
 import ListComponent from "../../Components/List";
 import Button from "../../Components/Button";
 import { type Item, type List } from "../../types/global";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 type Props = {};
 
@@ -14,18 +14,22 @@ export default function List({}: Props) {
   const value = useContext(GlobalContext);
   const {
     list,
-    addOn,
+    setList,
     listName,
     setListName,
     listDescription,
     setListDescription,
   } = value;
 
-  const DATAOBJECT: Item = { id: uuidv4(), name: listItem };
+  function handleAddItem() {
+    if (listItem === "") return;
+    setList([...list, { id: uuidv4(), name: listItem }]);
+    setListItem("");
+  }
 
-  console.log(listItem, "✨");
-  console.log(list);
-  console.log(DATAOBJECT)
+  function deleteFrom(id: string) {
+    setList(list.filter((item: Item) => item.id !== id));
+  }
 
   return (
     <>
@@ -85,16 +89,17 @@ export default function List({}: Props) {
                   name="list-description"
                 />
                 <button
-                  onClick={() => {
-                    addOn(DATAOBJECT);
-                    setListItem("");
-                  }}
+                  onClick={handleAddItem}
                   className="rounded-full border-2 border-blackish bg-fadedPink p-2 hover:bg-powder"
                 >
                   <p className="font-body text-2xl"> + </p>
                 </button>
               </div>
-              {list.length > 0? <ListComponent /> : ""}
+              {list.length > 0 ? (
+                <ListComponent deleteFrom={deleteFrom} list={list} />
+              ) : (
+                ""
+              )}
             </div>
           </Container>
           <Button page="/">next</Button>
