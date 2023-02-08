@@ -42,7 +42,6 @@ export default function List({}: Props) {
 
   return (
     <>
-      <NavBar />
       <main className=" bg-fadedPink">
         <div className="flexCenter h-screen w-screen">
           <Container title="Step One">

@@ -5,36 +5,39 @@ import useLocalStorage from "../Components/Hooks/useLocalStorage";
 import "../styles/globals.css";
 import { useState } from "react";
 import { type Item, type List } from "../types/global";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import NavBar from "../Components/NavBar";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const [ list, setList ] = useState<Item[]>([]);
+  const [list, setList] = useState<Item[]>([]);
   const [listName, setListName] = useState<string>("");
   const [listDescription, setListDescription] = useState<string>("");
-  const [localStorage, setLocalStorage] = useLocalStorage("listObject",{});
+  const [localStorage, setLocalStorage] = useLocalStorage("listObject", {});
 
-  const LISTOBJECT: List  = {
+  const LISTOBJECT: List = {
     id: uuidv4(),
     listName: listName,
     description: listDescription,
-    listOfItems: list
-  }
-
+    listOfItems: list,
+  };
 
   return (
-    <GlobalContext.Provider value={{
-      //Hook States
-      localStorage: localStorage,
-      setLocalStorage: setLocalStorage,
-      //App Level States
-      LISTOBJECT: LISTOBJECT,
-      list:list,
-      setList:setList,
-      listName: listName,
-      setListName: setListName,
-      listDescription: listDescription,
-      setListDescription: setListDescription
-    }}>
+    <GlobalContext.Provider
+      value={{
+        //Hook States
+        localStorage: localStorage,
+        setLocalStorage: setLocalStorage,
+        //App Level States
+        LISTOBJECT: LISTOBJECT,
+        list: list,
+        setList: setList,
+        listName: listName,
+        setListName: setListName,
+        listDescription: listDescription,
+        setListDescription: setListDescription,
+      }}
+    >
+      <NavBar />
       <Component {...pageProps} />
     </GlobalContext.Provider>
   );
