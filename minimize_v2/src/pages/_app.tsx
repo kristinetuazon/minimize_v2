@@ -13,12 +13,18 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [listName, setListName] = useState<string>("");
   const [listDescription, setListDescription] = useState<string>("");
   const [localStorage, setLocalStorage] = useLocalStorage("listObject", {});
+  const [yesList, setYesList] = useState<Item[]>([]);
+  const [noList, setNoList] = useState<Item[]>([]);
+  const [maybeList, setMaybeList] = useState<Item[]>([]);
 
   const LISTOBJECT: List = {
     id: uuidv4(),
     listName: listName,
     description: listDescription,
     listOfItems: list,
+    yesList: yesList,
+    noList: noList,
+    maybeList: maybeList,
   };
 
   return (
@@ -35,6 +41,12 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         setListName: setListName,
         listDescription: listDescription,
         setListDescription: setListDescription,
+        yesList: yesList,
+        noList: noList,
+        maybeList: maybeList,
+        setYesList: setYesList,
+        setNoList: setNoList,
+        setMaybeList: setMaybeList,
       }}
     >
       <NavBar />

@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import Container from "../../Components/Container";
-import NavBar from "../../Components/NavBar";
 import GlobalContext from "../../Components/GlobalContext";
 import ListComponent from "../../Components/List";
 import Button from "../../Components/Button";

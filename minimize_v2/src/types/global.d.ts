@@ -9,4 +9,7 @@ export type List = {
   listName: string;
   description: string;
   listOfItems: Item[];
+  yesList?: Item[];
+  noList?: Item[];
+  maybeList?: Item[];
 };

@@ -1,5 +1,7 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import GlobalContext from "../../Components/GlobalContext";
+import TinderCard from "../../Components/TinderCard";
+import Container from "../../Components/Container";
 
 type Props = {};
 
@@ -9,9 +11,12 @@ const Sort = (props: Props) => {
   return (
     <>
       <main className="w-screen bg-fadedPink">
-       <div className="flexCenter h-screen w-screen">
-
-       </div>
+        <div className="flexCenter h-screen w-screen">
+          <Container title={"Step Two"}>
+            This is the step when you'll have to make a decision: whether this object is 
+          </Container>
+          <TinderCard />
+        </div>
       </main>
     </>
   );
