@@ -29,7 +29,7 @@ export default function NavBar({}: Props) {
 
   return (
     <>
-      <div className="absolute bg-fadedPink">
+      <div className="absolute bg-transparent">
         <Link href={"/"}><Image
           id="logo"
           alt="logo"
