@@ -1,11 +1,24 @@
 # Minimize - Version 2
 
+## Introduction
+A decluttering list-sorting application. Version 2.
 
-## What's next? How do I make an app with this?
+Are you looking to declutter your closet or the unmentionable drawer you have in your kitchen? Are you backpacking and you're not sure what to bring? Are you moving homes and you want to take a general inventory of what you are bringing?
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Inspired by Marie Kondo's "what sparks joy" and the Minimalist lifestyle--Minimize aspires to help you sort through your things (clothes, books---anything) in two categories: yes and no.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Featires
+- List Creation
+- Sorting through a Created List
+
+## Future Features
+- Profile creation
+- Images alongside the Lists
+- Having a collection of lists
+- Editing and Adding in List Items/Lists
+- Native iOS and Android App
+
+## Tech Stack
 
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
@@ -13,15 +26,37 @@ If you are not familiar with the different technologies used in this project, pl
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 
-## Learn More
+# Getting Started
+## Prerequisites
+Node.js
+npm
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+# Installing
+- Clone the repository to your local machine:
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+```git clone https://github.com/kristinetuazon/minimize_v2```
 
-## How do I deploy this?
+- Navigate to the project directory:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```cd minimize_v2```
+
+- Install the dependencies:
+
+```npm install```
+-Start the development server:
+
+```npm start```
+
+## Deployment
+This application is ready for deployment to any web server. Simply build the application using the following command:
+
+```npm run build```
+And then serve the `build` folder to your desired web server.
+
+
+## Contributing
+If you would like to contribute to this project, please submit a pull request for review.
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
