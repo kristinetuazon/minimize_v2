@@ -1,15 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import Container from "../../Components/Container";
 import GlobalContext from "../../Components/GlobalContext";
 import Arrow from "../../Components/Arrow";
-import List from "../../Components/List";
 import FinalList from "../../Components/FinalList";
+import Button from "../../Components/Button";
 
 type Props = {};
 
 const Results = (props: Props) => {
   const value = useContext(GlobalContext);
   const { yesList, noList, maybeList, LISTOBJECT } = value;
+
+  const screenshotRef = useRef(null);
+
+  // console.log(isLoading,"✨")
+  // console.log(image, "🧩")
 
   console.log(LISTOBJECT);
   console.log(yesList);
@@ -39,6 +44,7 @@ const Results = (props: Props) => {
         <div className="flexCenter h-screen w-screen justify-center bg-fadedPink">
           <Container title={LISTOBJECT.listName}>
           {LISTOBJECT.description}
+          {/* <Button action={() => {}}> Screenshot</Button>  */}
           </Container>
           <div className="flex xxsm:flex-col xsm:flex-col sm:flex-col md:flex-row lg:flex-row ">
             <div className="lg:mr-10 md:mr-10 sm:h-max-[300px] sm:overflow-scroll xsm:h-max-[200px] xsm:overflow-scroll xxsm:h-max-[200px] xxsm:overflow-scroll">

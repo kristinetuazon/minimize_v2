@@ -3,8 +3,8 @@ import Link from "next/link";
 
 type Props = {
   children: string;
-  page: string;
-  action?: () => void;
+  page?: string;
+  action?: () => void | Promise<string> | undefined;
   // onPress?: (event: KeyboardEvent<HTMLButtonElement>) => void;
 };
 
@@ -14,7 +14,7 @@ export default function Button(props: Props) {
   return (
     <button onClick={action}>
       <Link
-        href={page}
+        href={page? page:""} 
         id="link"
         className=" mt-10 border-2 bg-offWhite hover:bg-powder p-5 font-heading text-lg uppercase shadow-md"
       >

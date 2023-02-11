@@ -37,34 +37,6 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-fadedPink">
         <div className="grid-flow-cols mb-5 grid grid-cols-4 gap-10">
-          <Image
-            id="logo"
-            alt="logo"
-            src={logo}
-            height="50"
-            className="logo pb-2"
-          />
-          <Image
-            id="logo"
-            alt="logo"
-            src={logo}
-            height="50"
-            className="logo pb-2"
-          />
-          <Image
-            id="logo"
-            alt="logo"
-            src={logo}
-            height="50"
-            className="logo pb-2"
-          />
-          <Image
-            id="logo"
-            alt="logo"
-            src={logo}
-            height="50"
-            className="logo pb-2"
-          />
         </div>
         <h1 id="title" className="font-title text-9xl">
           MINIMIZE

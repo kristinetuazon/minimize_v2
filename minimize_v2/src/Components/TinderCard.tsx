@@ -34,7 +34,6 @@ const TinderCards = () => {
   }
 
   const swiped = (direction:string, nameToDelete:string, index:number, id:string) => {
-    console.log(direction, nameToDelete, index)
     if (direction === "left") {
       setNoList([...noList, { id: id, name: nameToDelete }])
     }
