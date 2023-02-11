@@ -1,7 +1,7 @@
 # Minimize - Version 2
 
 ## Introduction
-A decluttering list-sorting application. Version 2. Initially simplified and optimized.n
+A decluttering list-sorting application. Version 2. Initially simplified and optimized. 
 
 Are you looking to declutter your closet or the unmentionable drawer you have in your kitchen? Are you backpacking and you're not sure what to bring? Are you moving homes and you want to take a general inventory of what you are bringing?
 

@@ -3,7 +3,6 @@ import GlobalContext from "../Components/GlobalContext";
 import dynamic from "next/dynamic";
 import Container from "../Components/Container";
 import { type Item } from "../types/global";
-import Button from "./Button";
 
 const TinderCard = dynamic(
   () => {
@@ -12,14 +11,12 @@ const TinderCard = dynamic(
   { ssr: false }
 );
 
-type Props = {};
 
-const TinderCards = (props: Props) => {
+
+const TinderCards = () => {
   const contextValue = useContext(GlobalContext);
   const {
     localStorage,
-    setLocalStorage,
-    LISTOBJECT,
     yesList,
     noList,
     maybeList,

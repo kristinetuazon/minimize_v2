@@ -7,6 +7,7 @@ import Image from "next/image";
 import { gsap, Power0 } from "gsap";
 import Button from "../Components/Button";
 import Container from "../Components/Container";
+import Arrow from "../Components/Arrow";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -71,14 +72,17 @@ const Home: NextPage = () => {
         <span className="mb-10 font-heading text-2xl">
           curate, sort, free your life
         </span>
+        <Arrow />
       </main>
       <div className="flexCenter h-screen w-screen bg-fadedPink">
         <Container title="Minimize is...">
-          <p className="font-bodyRegular text-center">Have you ever wondered why you had so much stuff? <br/><br/>  Minimize is a web
-          application that will help you declutter your life tinder-style. It
-          means you could take an inventory of items you wish to sort, swipe or
-          drag left or right to figure out which items you want or don't want to
-          keep and act on the results.</p>
+          <p className="text-center font-bodyRegular">
+            Have you ever wondered why you had so much stuff? <br />
+            <br /> Minimize is a web application that will help you declutter
+            your life tinder-style. It means you could take an inventory of
+            items you wish to sort, swipe or drag left or right to figure out
+            which items you want or don't want to keep and act on the results.
+          </p>
         </Container>
 
         <Button page="/list"> click here to start </Button>

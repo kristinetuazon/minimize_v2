@@ -5,6 +5,7 @@ import ListComponent from "../../Components/List";
 import Button from "../../Components/Button";
 import { type Item, type List } from "../../types/global";
 import { v4 as uuidv4 } from "uuid";
+import Arrow from "../../Components/Arrow";
 
 type Props = {};
 
@@ -50,9 +51,10 @@ export default function List({}: Props) {
               essential or not. It could also be just bunch of things with no
               particular relation that you want to scrutinize. Whatever it may
               be, we will be taking a list of these things. <br />
-              <br /> Scroll ⬇️ to start!
+      
             </p>
           </Container>
+         <Arrow/>
         </div>
         <div className="flexCenter h-screen w-screen">
           <Container title="new list">
@@ -94,7 +96,7 @@ export default function List({}: Props) {
                     e.preventDefault;
                     setListItem(e.target.value);
                   }}
-                  className="col-span-3 h-[50px] w-[300px] rounded-md border-2  bg-blackish p-2 font-bodyRegular text-powder shadow-md"
+                  className="col-span-3 h-[50px] w-[220px] rounded-md border-2  bg-blackish p-2 font-bodyRegular text-powder shadow-md"
                   type="text"
                   name="list-description"
                 />
