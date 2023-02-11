@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import GlobalContext from "../../Components/GlobalContext";
 import TinderCard from "../../Components/TinderCard";
 import Container from "../../Components/Container";
+import Button from "../../Components/Button";
 
 type Props = {};
 
@@ -43,8 +44,9 @@ const Sort = (props: Props) => {
             <p className="text-center font-bodyRegular" >Scroll ⬇️ to begin the sorting!</p>
           </Container>
         </div>
-        <div className="relative flexCenter h-screen w-screen">
+        <div className="relative flexCenter h-screen w-screen overflow-hidden">
           <TinderCard />
+          <Button page="/results">See your Results</Button>
         </div>
       </main>
     </>

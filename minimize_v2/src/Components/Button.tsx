@@ -1,10 +1,11 @@
-import React from "react";
+import React, {KeyboardEvent} from "react";
 import Link from "next/link";
 
 type Props = {
   children: string;
   page: string;
   action?: () => void;
+  // onPress?: (event: KeyboardEvent<HTMLButtonElement>) => void;
 };
 
 export default function Button(props: Props) {

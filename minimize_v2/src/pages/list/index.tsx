@@ -33,10 +33,8 @@ export default function List({}: Props) {
     setList(list.filter((item: Item) => item.id !== id));
   }
 
-  console.log(LISTOBJECT, "🙇🏻‍♂️");
   function handleSubmit() {
     setLocalStorage(LISTOBJECT);
-    console.log(localStorage, "🧩")
   }
 
   return (
@@ -61,10 +59,12 @@ export default function List({}: Props) {
             <div className="flexCenter">
               <p className="flexCenter pb-3 font-heading">Name of List</p>
               <input
+                placeholder="General category of the items to sort through"
                 className="w-full rounded-md border-2 bg-blackish p-2 font-bodyRegular text-powder shadow-md"
                 type="text"
                 name="list-name"
                 value={listName}
+                required
                 onChange={(e) => {
                   e.preventDefault;
                   setListName(e.target.value);
@@ -73,8 +73,10 @@ export default function List({}: Props) {
               />
               <p className="flexCenter pt-5 pb-3 font-heading">Description</p>
               <textarea
+                placeholder="Description about items that are most helpful to you"
                 value={listDescription}
                 rows={3}
+                required
                 className="col-span-2 h-[50%] w-[100%] justify-self-center  rounded-md border-2 bg-blackish p-2 font-bodyRegular text-powder shadow-md"
                 onChange={(e) => {
                   e.preventDefault;
@@ -86,12 +88,13 @@ export default function List({}: Props) {
               <p className="pt-7 pb-3 font-heading"> List of Items</p>
               <div className="mt-1 grid grid-cols-4 place-items-center gap-2">
                 <input
+                  placeholder="Item name"
                   value={listItem}
                   onChange={(e) => {
                     e.preventDefault;
                     setListItem(e.target.value);
                   }}
-                  className="col-span-3 h-[50px] w-[100%] rounded-md border-2  bg-blackish p-2 font-bodyRegular text-powder shadow-md"
+                  className="col-span-3 h-[50px] w-[300px] rounded-md border-2  bg-blackish p-2 font-bodyRegular text-powder shadow-md"
                   type="text"
                   name="list-description"
                 />
