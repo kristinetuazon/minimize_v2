@@ -21,7 +21,7 @@ export default function List({}: Props) {
     setListDescription,
     LISTOBJECT,
     localStorage,
-    setLocalStorage
+    setLocalStorage,
   } = value;
 
   function handleAddItem() {
@@ -51,10 +51,9 @@ export default function List({}: Props) {
               essential or not. It could also be just bunch of things with no
               particular relation that you want to scrutinize. Whatever it may
               be, we will be taking a list of these things. <br />
-      
             </p>
           </Container>
-         <Arrow/>
+          <Arrow />
         </div>
         <div className="flexCenter h-screen w-screen">
           <Container title="new list">
@@ -114,7 +113,9 @@ export default function List({}: Props) {
               )}
             </div>
           </Container>
-          <Button action={handleSubmit} page="/sort">next</Button>
+          <Button action={handleSubmit} page="/sort">
+            next
+          </Button>
         </div>
       </main>
     </>

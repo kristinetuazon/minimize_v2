@@ -36,8 +36,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/square-svgrepo-com.svg" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-fadedPink">
-        <div className="grid-flow-cols mb-5 grid grid-cols-4 gap-10">
-        </div>
+        <div className="grid-flow-cols mb-5 grid grid-cols-4 gap-10"></div>
         <h1 id="title" className="font-title text-9xl">
           MINIMIZE
         </h1>

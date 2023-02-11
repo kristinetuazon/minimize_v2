@@ -11,14 +11,11 @@ const FinalListItem = (props: Props) => {
 
   const mapList = list.map((item: Item, index: number) => {
     return (
-      <li className="font-bodyRegular mb-1" key={index} id={item.id}>
+      <li className="mb-1 font-bodyRegular" key={index} id={item.id}>
         <div className="flex flex-row items-center ">
-          <Image
-          id="logo"
-          alt="checkbox"
-          src={logo}
-          height="30"
-        /><p className="ml-2 item-name">{item.name}</p></div>
+          <Image id="logo" alt="checkbox" src={logo} height="30" />
+          <p className="item-name ml-2">{item.name}</p>
+        </div>
       </li>
     );
   });

@@ -12,14 +12,18 @@ const ListItem = (props: Props) => {
       <li className="font-bodyRegular" key={index} id={item.id}>
         <div className="mt-1 grid grid-cols-2 place-items-center">
           <p className="item-name">{item.name}</p>
-          {deleteFrom? <button
-            onClick={() => {
-              deleteFrom(item.id);
-            }}
-            className="ml-5 rounded-full border-2 border-blackish bg-fadedPink p-2 hover:bg-powder"
-          >
-            <p className="font-body text-2xl"> - </p>
-          </button>: ""}
+          {deleteFrom ? (
+            <button
+              onClick={() => {
+                deleteFrom(item.id);
+              }}
+              className="ml-5 rounded-full border-2 border-blackish bg-fadedPink p-2 hover:bg-powder"
+            >
+              <p className="font-body text-2xl"> - </p>
+            </button>
+          ) : (
+            ""
+          )}
         </div>
       </li>
     );

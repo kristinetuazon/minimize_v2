@@ -29,16 +29,17 @@ export default function NavBar({}: Props) {
 
   return (
     <>
-      <div className="absolute bg-transparent">
-        <Link href={"/"}><Image
-          id="logo"
-          alt="logo"
-          src={logo}
-          height="50"
-          className="m-7"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        />
+      <div className="bg-transparent absolute">
+        <Link href={"/"}>
+          <Image
+            id="logo"
+            alt="logo"
+            src={logo}
+            height="50"
+            className="m-7"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          />
         </Link>
       </div>
 

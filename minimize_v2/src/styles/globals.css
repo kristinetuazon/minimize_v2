@@ -3,56 +3,54 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: "Bargemo";
-    src: url("../../Assets/Bargemo_Heading/Bargemo-Regular.otf");
-  }
-  
-  @font-face {
-    font-family: "Holipop";
-    src: url("../../Assets/Holipop_Title/Holipop.otf");
-  }
-  
-  @font-face {
-    font-family: "Petrona_ExtraLight";
-    src: url("../../Assets/Petrona_Body/static/Petrona-ExtraLight.ttf");
-  }
-  
-  @font-face {
-    font-family: "Petrona_Light";
-    src: url("../../Assets/Petrona_Body/static/Petrona-Light.ttf");
-  }
-  
-  @font-face {
-    font-family: "Petrona_Regular";
-    src: url("../../Assets/Petrona_Body/static/Petrona-Regular.ttf");
-  }
-  
-  @font-face {
-    font-family: "Petrona_Thin";
-    src: url("../../Assets/Petrona_Body/static/Petrona-Thin.ttf");
-  }
-  
-  @font-face {
-    font-family: "Petrona_Italic";
-    src: url("../../Assets/Petrona_Body/static/Petrona-Italic.ttf");
-  }
-  
-  @font-face {
-    font-family: "Petrona_Thin_Italic";
-    src: url("../../Assets/Petrona_Body/static/Petrona-ThinItalic.ttf");
-  }
+  font-family: "Bargemo";
+  src: url("../../Assets/Bargemo_Heading/Bargemo-Regular.otf");
+}
 
-  .flexCenter {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+@font-face {
+  font-family: "Holipop";
+  src: url("../../Assets/Holipop_Title/Holipop.otf");
+}
 
-  HTML CSSResult Skip Results Iframe
-EDIT ON
-body {
-  background:#0b1d2a;
+@font-face {
+  font-family: "Petrona_ExtraLight";
+  src: url("../../Assets/Petrona_Body/static/Petrona-ExtraLight.ttf");
+}
+
+@font-face {
+  font-family: "Petrona_Light";
+  src: url("../../Assets/Petrona_Body/static/Petrona-Light.ttf");
+}
+
+@font-face {
+  font-family: "Petrona_Regular";
+  src: url("../../Assets/Petrona_Body/static/Petrona-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Petrona_Thin";
+  src: url("../../Assets/Petrona_Body/static/Petrona-Thin.ttf");
+}
+
+@font-face {
+  font-family: "Petrona_Italic";
+  src: url("../../Assets/Petrona_Body/static/Petrona-Italic.ttf");
+}
+
+@font-face {
+  font-family: "Petrona_Thin_Italic";
+  src: url("../../Assets/Petrona_Body/static/Petrona-ThinItalic.ttf");
+}
+
+.flexCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+HTML CSSResult Skip Results Iframe EDIT ON body {
+  background: #0b1d2a;
 }
 
 .arrows {
@@ -67,38 +65,52 @@ body {
 .arrows path {
   stroke: #181c1f;
   fill: transparent;
-  stroke-width: 1px;  
+  stroke-width: 1px;
   animation: arrow 2s infinite;
-  -webkit-animation: arrow 2s infinite; 
+  -webkit-animation: arrow 2s infinite;
 }
 
-@keyframes arrow
-{
-0% {opacity:0}
-40% {opacity:1}
-80% {opacity:0}
-100% {opacity:0}
+@keyframes arrow {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-@-webkit-keyframes arrow /*Safari and Chrome*/
-{
-0% {opacity:0}
-40% {opacity:1}
-80% {opacity:0}
-100% {opacity:0}
+@-webkit-keyframes arrow /*Safari and Chrome*/ {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .arrows path.a1 {
-  animation-delay:-1s;
-  -webkit-animation-delay:-1s; /* Safari 和 Chrome */
+  animation-delay: -1s;
+  -webkit-animation-delay: -1s; /* Safari 和 Chrome */
 }
 
 .arrows path.a2 {
-  animation-delay:-0.5s;
-  -webkit-animation-delay:-0.5s; /* Safari 和 Chrome */
+  animation-delay: -0.5s;
+  -webkit-animation-delay: -0.5s; /* Safari 和 Chrome */
 }
 
-.arrows path.a3 { 
-  animation-delay:0s;
-  -webkit-animation-delay:0s; /* Safari 和 Chrome */
+.arrows path.a3 {
+  animation-delay: 0s;
+  -webkit-animation-delay: 0s; /* Safari 和 Chrome */
 }

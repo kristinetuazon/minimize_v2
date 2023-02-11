@@ -43,15 +43,15 @@ const Results = (props: Props) => {
         </div>
         <div className="flexCenter h-screen w-screen justify-center bg-fadedPink">
           <Container title={LISTOBJECT.listName}>
-          {LISTOBJECT.description}
-          {/* <Button action={() => {}}> Screenshot</Button>  */}
+            {LISTOBJECT.description}
+            {/* <Button action={() => {}}> Screenshot</Button>  */}
           </Container>
           <div className="flex xxsm:flex-col xsm:flex-col sm:flex-col md:flex-row lg:flex-row ">
-            <div className="lg:mr-10 md:mr-10 sm:h-max-[300px] sm:overflow-scroll xsm:h-max-[200px] xsm:overflow-scroll xxsm:h-max-[200px] xxsm:overflow-scroll">
+            <div className="sm:h-max-[300px] xsm:h-max-[200px] xxsm:h-max-[200px] xxsm:overflow-scroll xsm:overflow-scroll sm:overflow-scroll md:mr-10 lg:mr-10">
               <FinalList listName={"Yes List"} list={yesList} />
             </div>
 
-            <div className="sm:h-max-[300px] sm:overflow-scroll xsm:h-max-[200px] xsm:overflow-scroll xxsm:h-max-[200px] xxsm:overflow-scroll">
+            <div className="sm:h-max-[300px] xsm:h-max-[200px] xxsm:h-max-[200px] xxsm:overflow-scroll xsm:overflow-scroll sm:overflow-scroll">
               <FinalList listName={"No List"} list={noList} />
             </div>
           </div>

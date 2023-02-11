@@ -10,9 +10,9 @@ const ListComponent = (props: Props) => {
 
   return (
     <div className="flexCenter mt-5 max-h-[200px] w-full overflow-scroll rounded-md border-2 bg-fadedPink p-3">
-    <ul className = "items-center flexCenter">
-      <ListItem deleteFrom={deleteFrom} list={list} />
-    </ul>
+      <ul className="flexCenter items-center">
+        <ListItem deleteFrom={deleteFrom} list={list} />
+      </ul>
     </div>
   );
 };

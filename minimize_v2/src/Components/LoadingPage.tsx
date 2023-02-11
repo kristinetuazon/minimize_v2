@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 export default function LoadingPage() {
   useEffect(() => {
-
     gsap.to(".logo", {
       rotation: -360,
       ease: Power0.easeNone,
@@ -14,8 +13,9 @@ export default function LoadingPage() {
     });
   }, []);
 
-    return <>
-     <main className="flexCenter bg-fadedPink h-screen w-screen">
+  return (
+    <>
+      <main className="flexCenter h-screen w-screen bg-fadedPink">
         <div className="grid-flow-cols mb-5 grid grid-cols-4 gap-7">
           <Image
             id="logo"
@@ -47,11 +47,12 @@ export default function LoadingPage() {
           />
         </div>
         <div className="grid-flow-cols mb-5 grid grid-cols-4 gap-5">
-         <p className="font-title text-9xl">M</p>
-         <p className="font-title text-9xl">N</p>
-         <p className="font-title text-9xl">M</p>
-         <p className="font-title text-9xl">Z</p>
+          <p className="font-title text-9xl">M</p>
+          <p className="font-title text-9xl">N</p>
+          <p className="font-title text-9xl">M</p>
+          <p className="font-title text-9xl">Z</p>
         </div>
-    </main>
+      </main>
     </>
-  }
+  );
+}
