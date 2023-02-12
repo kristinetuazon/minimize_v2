@@ -1,8 +1,9 @@
-import React, { useContext, useState, useMemo, useRef } from "react";
-import GlobalContext from "../Components/GlobalContext";
+import React, { useContext, useState, useRef } from "react";
+import GlobalContext from "./GlobalContext";
 import dynamic from "next/dynamic";
-import Container from "../Components/Container";
+import Container from "./Container";
 import { type Item } from "../types/global";
+import { GlobalContextType } from "../types/global";
 
 const TinderCard = dynamic(
   () => {
@@ -12,7 +13,7 @@ const TinderCard = dynamic(
 );
 
 const TinderCards = () => {
-  const contextValue = useContext(GlobalContext);
+  const contextValue = useContext<GlobalContextType>(GlobalContext);
   const {
     localStorage,
     yesList,
@@ -23,7 +24,7 @@ const TinderCards = () => {
     setMaybeList,
   } = contextValue;
   const [currentIndex, setCurrentIndex] = useState<number>(
-    localStorage.listOfItems.length - 1
+    localStorage!.listOfItems.length - 1
   );
   const [lastDirection, setLastDirection] = useState<string>("");
   const currentIndexRef = useRef<number>(currentIndex);
@@ -40,20 +41,21 @@ const TinderCards = () => {
     id: string
   ) => {
     if (direction === "left") {
-      setNoList([...noList, { id: id, name: nameToDelete }]);
+      noList!.push({ id: id, name: nameToDelete });
     }
     if (direction === "right") {
-      setYesList([...yesList, { id: id, name: nameToDelete }]);
+      yesList!.push({ id: id, name: nameToDelete });
     }
     if (direction === "down") {
-      setMaybeList([...maybeList, { id: id, name: nameToDelete }]);
+      maybeList!.push({ id: id, name: nameToDelete });
     }
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
   };
 
-  return localStorage.listOfItems.map((item: Item, index: number) => {
-    return (
+
+const renderTinderCards =localStorage!.listOfItems.map((item: Item, index: number) => {
+    return <>
       <TinderCard
         className="swipe absolute"
         key={item.id}
@@ -69,8 +71,12 @@ const TinderCards = () => {
          }  */}
         </Container>
       </TinderCard>
-    );
+      </>
   });
+
+  return(<>
+  {renderTinderCards}
+  </>)
 };
 
 export default TinderCards;

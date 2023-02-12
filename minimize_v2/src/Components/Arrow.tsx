@@ -1,8 +1,7 @@
 import React from "react";
 
-type Props = {};
 
-const Arrow = (props: Props) => {
+const Arrow = () => {
   return (
     <>
       <svg className="arrows">

@@ -3,15 +3,14 @@ import Container from "../../Components/Container";
 import GlobalContext from "../../Components/GlobalContext";
 import ListComponent from "../../Components/List";
 import Button from "../../Components/Button";
-import { type Item, type List } from "../../types/global";
+import { type Item, type List, type GlobalContextType } from "../../types/global";
 import { v4 as uuidv4 } from "uuid";
 import Arrow from "../../Components/Arrow";
 
-type Props = {};
 
-export default function List({}: Props) {
+export default function List() {
   const [listItem, setListItem] = useState<string>("");
-  const value = useContext(GlobalContext);
+  const value = useContext<GlobalContextType>(GlobalContext);
   const {
     list,
     setList,
@@ -20,22 +19,30 @@ export default function List({}: Props) {
     listDescription,
     setListDescription,
     LISTOBJECT,
-    localStorage,
     setLocalStorage,
   } = value;
 
   function handleAddItem() {
     if (listItem === "") return;
-    setList([...list, { id: uuidv4(), name: listItem }]);
+    list!.push({id: uuidv4(), name: listItem });
     setListItem("");
   }
 
+  // function handleAddItem() {
+  //   if (listItem === "") return;
+  //   setList([...list!,  {id: uuidv4(), name: listItem }]);
+  //   setListItem("");
+  // }
+
   function deleteFrom(id: string) {
-    setList(list.filter((item: Item) => item.id !== id));
+    const filteredList = list!.filter((item: Item) => item.id !== id);
+    setList!(filteredList);
   }
 
+
+
   function handleSubmit() {
-    setLocalStorage(LISTOBJECT);
+    setLocalStorage!(LISTOBJECT);
   }
 
   return (
@@ -44,7 +51,7 @@ export default function List({}: Props) {
         <div className="flexCenter h-screen w-screen">
           <Container title="Step One">
             <p className="text-center font-bodyRegular">
-              Let's list the things you want to declutter.
+              Let&apos;s list the things you want to declutter.
               <br />
               <br /> It could be clothes in the same drawer, a pile of books or
               maybe overweight luggage that you need help in sorting which is
@@ -68,7 +75,7 @@ export default function List({}: Props) {
                 required
                 onChange={(e) => {
                   e.preventDefault;
-                  setListName(e.target.value);
+                  setListName!(e.target.value);
                 }}
                 id=""
               />
@@ -81,7 +88,7 @@ export default function List({}: Props) {
                 className="col-span-2 h-[50%] w-[100%] justify-self-center  rounded-md border-2 bg-blackish p-2 font-bodyRegular text-powder shadow-md"
                 onChange={(e) => {
                   e.preventDefault;
-                  setListDescription(e.target.value);
+                  setListDescription!(e.target.value);
                 }}
               ></textarea>
               <p></p>
@@ -106,8 +113,8 @@ export default function List({}: Props) {
                   <p className="font-body text-2xl"> + </p>
                 </button>
               </div>
-              {list.length > 0 ? (
-                <ListComponent deleteFrom={deleteFrom} list={list} />
+              {list!.length > 0 ? (
+                <ListComponent deleteFrom={deleteFrom} list={list!} />
               ) : (
                 ""
               )}

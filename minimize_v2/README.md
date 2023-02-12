@@ -3,9 +3,9 @@
 ## Introduction
 A decluttering list-sorting application. Version 2. Initially simplified and optimized. 
 
-Are you looking to declutter your closet or the unmentionable drawer you have in your kitchen? Are you backpacking and you're not sure what to bring? Are you moving homes and you want to take a general inventory of what you are bringing?
+Are you looking to declutter your closet or the unmentionable drawer you have in your kitchen? Are you backpacking and you&apos;re not sure what to bring? Are you moving homes and you want to take a general inventory of what you are bringing?
 
-Inspired by Marie Kondo's "what sparks joy" and the Minimalist lifestyle--Minimize aspires to help you sort through your things (clothes, books---anything) in two categories: yes and no.
+Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--Minimize aspires to help you sort through your things (clothes, books---anything) in two categories: yes and no.
 
 ## Features
 - List Creation

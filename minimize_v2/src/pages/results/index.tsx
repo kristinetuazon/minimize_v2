@@ -1,25 +1,15 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import Container from "../../Components/Container";
 import GlobalContext from "../../Components/GlobalContext";
 import Arrow from "../../Components/Arrow";
 import FinalList from "../../Components/FinalList";
-import Button from "../../Components/Button";
+import { GlobalContextType } from "../../types/global";
 
-type Props = {};
 
-const Results = (props: Props) => {
-  const value = useContext(GlobalContext);
-  const { yesList, noList, maybeList, LISTOBJECT } = value;
+const Results = () => {
+  const value = useContext<GlobalContextType>(GlobalContext);
+  const { yesList, noList, LISTOBJECT } = value;
 
-  const screenshotRef = useRef(null);
-
-  // console.log(isLoading,"✨")
-  // console.log(image, "🧩")
-
-  console.log(LISTOBJECT);
-  console.log(yesList);
-  console.log(noList);
-  console.log(maybeList);
   return (
     <>
       <main>
@@ -42,17 +32,17 @@ const Results = (props: Props) => {
           <Arrow />
         </div>
         <div className="flexCenter h-screen w-screen justify-center bg-fadedPink">
-          <Container title={LISTOBJECT.listName}>
-            {LISTOBJECT.description}
+          <Container title={LISTOBJECT!.listName}>
+            {LISTOBJECT!.description}
             {/* <Button action={() => {}}> Screenshot</Button>  */}
           </Container>
           <div className="flex xxsm:flex-col xsm:flex-col sm:flex-col md:flex-row lg:flex-row ">
             <div className="sm:h-max-[300px] xsm:h-max-[200px] xxsm:h-max-[200px] xxsm:overflow-scroll xsm:overflow-scroll sm:overflow-scroll md:mr-10 lg:mr-10">
-              <FinalList listName={"Yes List"} list={yesList} />
+              <FinalList listName={"Yes List"} list={yesList!} />
             </div>
 
             <div className="sm:h-max-[300px] xsm:h-max-[200px] xxsm:h-max-[200px] xxsm:overflow-scroll xsm:overflow-scroll sm:overflow-scroll">
-              <FinalList listName={"No List"} list={noList} />
+              <FinalList listName={"No List"} list={noList!} />
             </div>
           </div>
         </div>

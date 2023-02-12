@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { api } from "../utils/api";
-import logo from "/public/square-svgrepo-com.svg";
-import Image from "next/image";
+// import { api } from "../utils/api";
+// import logo from "/public/square-svgrepo-com.svg";
+// import Image from "next/image";
 import { gsap, Power0 } from "gsap";
 import Button from "../Components/Button";
 import Container from "../Components/Container";
@@ -52,7 +52,7 @@ const Home: NextPage = () => {
             <br /> Minimize is a web application that will help you declutter
             your life tinder-style. It means you could take an inventory of
             items you wish to sort, swipe or drag left or right to figure out
-            which items you want or don't want to keep and act on the results.
+            which items you want or don&apos;t want to keep and act on the results.
           </p>
         </Container>
 

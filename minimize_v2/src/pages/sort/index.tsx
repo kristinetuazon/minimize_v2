@@ -1,22 +1,18 @@
 import React, { useContext } from "react";
 import GlobalContext from "../../Components/GlobalContext";
-import TinderCard from "../../Components/TinderCard";
+import TinderCards from "../../Components/TinderCards";
 import Container from "../../Components/Container";
 import Button from "../../Components/Button";
 import Arrow from "../../Components/Arrow";
 
-type Props = {};
-
-const Sort = (props: Props) => {
-  const contextValue = useContext(GlobalContext);
-  const {} = contextValue;
+const Sort = () => {
   return (
     <>
       <main className="w-screen bg-fadedPink">
         <div className="flexCenter h-screen w-screen">
           <Container title={"Step Two"}>
             <p className="text-center font-bodyRegular">
-              This is the step when you'll have to make a decision: whether this
+              This is the step when you&apos;ll have to make a decision: whether this
               object is something that you still use, or is it something that
               you need to let go of? In this step you are given two choices, ⬅️
               for no and ➡️ for yes.
@@ -41,7 +37,7 @@ const Sort = (props: Props) => {
           <Arrow />
         </div>
         <div className="flexCenter relative h-screen w-screen overflow-hidden">
-          <TinderCard />
+          <TinderCards />
           <Button page="/results">See your Results</Button>
         </div>
       </main>

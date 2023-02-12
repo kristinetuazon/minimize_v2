@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Camera, CameraType } from "react-camera-pro";
+import { Camera, type CameraType } from "react-camera-pro";
 
 const errorMessages = {
   noCameraAccessible: "Sorry, no camera accessible.",

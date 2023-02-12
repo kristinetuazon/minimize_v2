@@ -1,11 +1,10 @@
-import React, {KeyboardEvent} from "react";
+import React from "react";
 import Link from "next/link";
 
 type Props = {
   children: string;
   page?: string;
   action?: () => void | Promise<string> | undefined;
-  // onPress?: (event: KeyboardEvent<HTMLButtonElement>) => void;
 };
 
 export default function Button(props: Props) {

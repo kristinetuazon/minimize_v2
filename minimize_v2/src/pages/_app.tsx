@@ -12,7 +12,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [list, setList] = useState<Item[]>([]);
   const [listName, setListName] = useState<string>("");
   const [listDescription, setListDescription] = useState<string>("");
-  const [localStorage, setLocalStorage] = useLocalStorage("listObject", {});
+  const [localStorage, setLocalStorage] = useLocalStorage("listObject", undefined);
   const [yesList, setYesList] = useState<Item[]>([]);
   const [noList, setNoList] = useState<Item[]>([]);
   const [maybeList, setMaybeList] = useState<Item[]>([]);
