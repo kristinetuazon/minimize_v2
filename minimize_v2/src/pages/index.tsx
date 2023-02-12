@@ -4,7 +4,7 @@ import Head from "next/head";
 // import { api } from "../utils/api";
 // import logo from "/public/square-svgrepo-com.svg";
 // import Image from "next/image";
-import { gsap, Power0 } from "gsap";
+// import { gsap, Power0 } from "gsap";
 import Button from "../Components/Button";
 import Container from "../Components/Container";
 import Arrow from "../Components/Arrow";
@@ -12,18 +12,18 @@ import Arrow from "../Components/Arrow";
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
-  useEffect(() => {
-    gsap.to(".logo", {
-      rotation: -360,
-      ease: Power0.easeNone,
-      repeat: -1,
-      duration: 3,
-    });
+  // useEffect(() => {
+  //   gsap.to(".logo", {
+  //     rotation: -360,
+  //     ease: Power0.easeNone,
+  //     repeat: -1,
+  //     duration: 3,
+  //   });
 
     // gsap.to(".flexCenter", {
     //   duration: 3,
     // });
-  }, []);
+  // }, []);
 
   return (
     <>

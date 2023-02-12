@@ -10,7 +10,7 @@ import Arrow from "../../Components/Arrow";
 
 export default function List() {
   const [listItem, setListItem] = useState<string>("");
-  const value = useContext<GlobalContextType>(GlobalContext);
+  const value = useContext(GlobalContext);
   const {
     list,
     setList,
@@ -19,27 +19,19 @@ export default function List() {
     listDescription,
     setListDescription,
     LISTOBJECT,
+    localStorage,
     setLocalStorage,
   } = value;
 
   function handleAddItem() {
     if (listItem === "") return;
-    list!.push({id: uuidv4(), name: listItem });
+    setList!([...list!, { id: uuidv4(), name: listItem }]);
     setListItem("");
   }
 
-  // function handleAddItem() {
-  //   if (listItem === "") return;
-  //   setList([...list!,  {id: uuidv4(), name: listItem }]);
-  //   setListItem("");
-  // }
-
   function deleteFrom(id: string) {
-    const filteredList = list!.filter((item: Item) => item.id !== id);
-    setList!(filteredList);
+    setList!(list!.filter((item: Item) => item.id !== id));
   }
-
-
 
   function handleSubmit() {
     setLocalStorage!(LISTOBJECT);
@@ -51,7 +43,7 @@ export default function List() {
         <div className="flexCenter h-screen w-screen">
           <Container title="Step One">
             <p className="text-center font-bodyRegular">
-              Let&apos;s list the things you want to declutter.
+              Let's list the things you want to declutter.
               <br />
               <br /> It could be clothes in the same drawer, a pile of books or
               maybe overweight luggage that you need help in sorting which is

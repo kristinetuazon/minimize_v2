@@ -3,7 +3,7 @@ import Container from "../../Components/Container";
 import GlobalContext from "../../Components/GlobalContext";
 import Arrow from "../../Components/Arrow";
 import FinalList from "../../Components/FinalList";
-import { GlobalContextType } from "../../types/global";
+import { type GlobalContextType } from "../../types/global";
 
 
 const Results = () => {
