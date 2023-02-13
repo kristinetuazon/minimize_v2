@@ -19,8 +19,8 @@ export default function List() {
     listDescription,
     setListDescription,
     LISTOBJECT,
-    localStorage,
-    setLocalStorage,
+    // localStorage,
+    // setLocalStorage,
   } = value;
 
   function handleAddItem() {
@@ -33,9 +33,9 @@ export default function List() {
     setList!(list!.filter((item: Item) => item.id !== id));
   }
 
-  function handleSubmit() {
-    setLocalStorage!(LISTOBJECT);
-  }
+  // function handleSubmit() {
+  //   setLocalStorage!(LISTOBJECT);
+  // }
 
   return (
     <>
@@ -43,7 +43,7 @@ export default function List() {
         <div className="flexCenter h-screen w-screen">
           <Container title="Step One">
             <p className="text-center font-bodyRegular">
-              Let's list the things you want to declutter.
+              Let&apos;s list the things you want to declutter.
               <br />
               <br /> It could be clothes in the same drawer, a pile of books or
               maybe overweight luggage that you need help in sorting which is
@@ -66,7 +66,7 @@ export default function List() {
                 value={listName}
                 required
                 onChange={(e) => {
-                  e.preventDefault;
+                  // e.preventDefault;
                   setListName!(e.target.value);
                 }}
                 id=""
@@ -79,7 +79,7 @@ export default function List() {
                 required
                 className="col-span-2 h-[50%] w-[100%] justify-self-center  rounded-md border-2 bg-blackish p-2 font-bodyRegular text-powder shadow-md"
                 onChange={(e) => {
-                  e.preventDefault;
+                  // e.preventDefault;
                   setListDescription!(e.target.value);
                 }}
               ></textarea>
@@ -91,7 +91,7 @@ export default function List() {
                   placeholder="Item name"
                   value={listItem}
                   onChange={(e) => {
-                    e.preventDefault;
+                    // e.preventDefault;
                     setListItem(e.target.value);
                   }}
                   className="col-span-3 h-[50px] w-[220px] rounded-md border-2  bg-blackish p-2 font-bodyRegular text-powder shadow-md"
@@ -112,7 +112,10 @@ export default function List() {
               )}
             </div>
           </Container>
-          <Button action={handleSubmit} page="/sort">
+          {/* <Button action={handleSubmit} page="/sort">
+            next
+          </Button> */}
+          <Button page="/sort">
             next
           </Button>
         </div>

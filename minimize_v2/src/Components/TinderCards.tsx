@@ -15,7 +15,8 @@ const TinderCard = dynamic(
 const TinderCards = () => {
   const contextValue = useContext<GlobalContextType>(GlobalContext);
   const {
-    localStorage,
+    // localStorage,
+    LISTOBJECT,
     yesList,
     noList,
     maybeList,
@@ -24,7 +25,7 @@ const TinderCards = () => {
     setMaybeList,
   } = contextValue;
   const [currentIndex, setCurrentIndex] = useState<number>(
-   localStorage!.listOfItems.length - 1
+    LISTOBJECT!.listOfItems.length - 1
   );
   const [lastDirection, setLastDirection] = useState<string>("");
   const currentIndexRef = useRef<number>(currentIndex);
@@ -41,19 +42,19 @@ const TinderCards = () => {
     id: string
   ) => {
     if (direction === "left") {
-      setNoList!([...noList, { id: id, name: nameToDelete }]);
+      setNoList!([...noList!, { id: id, name: nameToDelete }]);
     }
     if (direction === "right") {
-      setYesList!([...yesList, { id: id, name: nameToDelete }]);
+      setYesList!([...yesList!, { id: id, name: nameToDelete }]);
     }
     if (direction === "down") {
-      setMaybeList!([...maybeList, { id: id, name: nameToDelete }]);
+      setMaybeList!([...maybeList!, { id: id, name: nameToDelete }]);
     }
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
   };
 
-  return localStorage.listOfItems.map((item: Item, index: number) => {
+  const renderCards = LISTOBJECT!.listOfItems.map((item: Item, index: number) => {
     return (
       <TinderCard
         className="swipe absolute"
@@ -72,6 +73,8 @@ const TinderCards = () => {
       </TinderCard>
     );
   });
+
+  return ( <>{renderCards}</>)
 };
 
 export default TinderCards;

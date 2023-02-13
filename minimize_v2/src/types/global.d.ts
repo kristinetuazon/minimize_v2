@@ -16,8 +16,8 @@ export type List = {
 
 export type GlobalContextType = {
   //Hook States
-  localStorage?: List | undefined;
-  setLocalStorage?: (List) => void;
+  // localStorage?: List | undefined;
+  // setLocalStorage?: (List) => void;
   //App Level States
   LISTOBJECT?: List;
   list?: Item[];
