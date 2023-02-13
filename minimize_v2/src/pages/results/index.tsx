@@ -33,8 +33,7 @@ const Results = () => {
         </div>
         <div className="flexCenter h-screen w-screen justify-center bg-fadedPink">
           <Container title={LISTOBJECT!.listName}>
-            {LISTOBJECT!.description}
-            {/* <Button action={() => {}}> Screenshot</Button>  */}
+            <p className="text-center font-bodyRegular">{LISTOBJECT!.description}</p>
           </Container>
           <div className="flex xxsm:flex-col xsm:flex-col sm:flex-col md:flex-row lg:flex-row ">
             <div className="sm:h-max-[300px] xsm:h-max-[200px] xxsm:h-max-[200px] xxsm:overflow-scroll xsm:overflow-scroll sm:overflow-scroll md:mr-10 lg:mr-10">

@@ -73,7 +73,7 @@ export default function List() {
               />
               <p className="flexCenter pt-5 pb-3 font-heading">Description</p>
               <textarea
-                placeholder="Description about items that are most helpful to you"
+                placeholder="Description about the items that are most helpful to you"
                 value={listDescription}
                 rows={3}
                 required
