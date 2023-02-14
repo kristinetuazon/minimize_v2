@@ -34,7 +34,6 @@ const Sort = () => {
               <li>✨ Do I have something that is similar?</li>
             </ul>
           </Container>
-          <Arrow />
         </div>
         <div className="flexCenter relative h-screen w-screen overflow-hidden">
           <TinderCards />
