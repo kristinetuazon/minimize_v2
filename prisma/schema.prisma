@@ -10,7 +10,32 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
+model User {
+    userId String @unique
+    username String @unique
+    name String?
+    picture String?
+    // createdLists List[]
+}
+
+// model List {
+//     id String @unique
+//     listName String
+//     description String
+//     listOfItems Item[] @relation(name: "ListofItems", fields:[id])
+//     yesList Item[] @relation( name:"yesList", fields:[id])
+//     noList Item[] @relation(name: "noList", fields:[id])
+//     maybeList Item[] @relation(name: "maybeList", fields:[id])
+// }
+
+// model Item {
+//     id String @unique
+//     name String
+//     ListName List[]
+//     picture String?
+// }
+
+model Sessions {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

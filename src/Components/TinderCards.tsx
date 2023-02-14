@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useEffect,createRef, useState, useRef } from "react";
 import GlobalContext from "./GlobalContext";
 import dynamic from "next/dynamic";
 import Container from "./Container";
@@ -20,21 +20,36 @@ const TinderCards = () => {
     LISTOBJECT,
     yesList,
     noList,
-    maybeList,
+    // maybeList,
     setYesList,
     setNoList,
-    setMaybeList,
+    // setMaybeList,
   } = contextValue;
   const [currentIndex, setCurrentIndex] = useState<number>(
     LISTOBJECT!.listOfItems.length - 1
   );
   const [lastDirection, setLastDirection] = useState<string>("");
   const currentIndexRef = useRef<number>(currentIndex);
-
   const updateCurrentIndex = (val: number) => {
     setCurrentIndex(val);
     currentIndexRef.current = val;
   };
+  const childRefs = useRef(LISTOBJECT!.listOfItems.map(() => createRef<number>()));
+
+  console.log(childRefs)
+
+
+  // useEffect(() => {
+  //   const nextHeights = childRefs.current.map(
+  //     ref => ref.current[currentIndex].current.swipe()
+  //   );
+  //   setHeights(nextHeights);
+  // }, []);
+
+  const canGoBack = currentIndex < LISTOBJECT!.listOfItems.length - 1
+
+  const canSwipe = currentIndex >= 0
+
 
   const swiped = (
     direction: string,
@@ -54,6 +69,15 @@ const TinderCards = () => {
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
   };
+
+console.log(lastDirection)
+console.log(currentIndex)
+
+const swipe = async (dir:string) => {
+  if (canSwipe && currentIndex < LISTOBJECT!.listOfItems.length) {
+    await childRefs[currentIndex].current.swipe(dir) // Swipe the card!
+  }
+}
 
   const renderCards = LISTOBJECT!.listOfItems.map((item: Item, index: number) => {
     return (
@@ -77,7 +101,7 @@ const TinderCards = () => {
   });
 
   return ( <>{renderCards}
-  <BottomBar/></>)
+  <BottomBar leftAction={()=>{swipe('left')}} rightAction={()=>{swipe('right')}}/></>)
 };
 
 export default TinderCards;
