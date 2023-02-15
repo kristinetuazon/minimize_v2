@@ -1,10 +1,22 @@
-import React, { useContext, useEffect,createRef, useState, useRef } from "react";
+import React, {
+  useMemo,
+  type RefObject,
+  useContext,
+  useState,
+  useRef,
+} from "react";
 import GlobalContext from "./GlobalContext";
 import dynamic from "next/dynamic";
-import Container from "./Container";
 import { type Item } from "../types/global";
 import { GlobalContextType } from "../types/global";
 import BottomBar from "./BottomBar";
+
+type Direction = "left" | "right" | "up" | "down";
+
+export interface API {
+  swipe(dir?: Direction): Promise<void>;
+  restoreCard(): Promise<void>;
+}
 
 const TinderCard = dynamic(
   () => {
@@ -16,40 +28,37 @@ const TinderCard = dynamic(
 const TinderCards = () => {
   const contextValue = useContext<GlobalContextType>(GlobalContext);
   const {
-    // localStorage,
     LISTOBJECT,
     yesList,
     noList,
-    // maybeList,
     setYesList,
     setNoList,
-    // setMaybeList,
   } = contextValue;
   const [currentIndex, setCurrentIndex] = useState<number>(
-    LISTOBJECT!.listOfItems.length - 1
+    LISTOBJECT!.listOfItems.length-1 
   );
   const [lastDirection, setLastDirection] = useState<string>("");
   const currentIndexRef = useRef<number>(currentIndex);
+
   const updateCurrentIndex = (val: number) => {
     setCurrentIndex(val);
     currentIndexRef.current = val;
   };
-  const childRefs = useRef(LISTOBJECT!.listOfItems.map(() => createRef<number>()));
 
-  console.log(childRefs)
+  
 
+  const childRefs: RefObject<API>[] = useMemo(
+    () =>
+      Array(LISTOBJECT!.listOfItems.length)
+        .fill(0)
+        .map((i) => React.createRef()),
+    []
+  );
 
-  // useEffect(() => {
-  //   const nextHeights = childRefs.current.map(
-  //     ref => ref.current[currentIndex].current.swipe()
-  //   );
-  //   setHeights(nextHeights);
-  // }, []);
+ 
+  // const canGoBack = currentIndex < LISTOBJECT!.listOfItems.length - 1
 
-  const canGoBack = currentIndex < LISTOBJECT!.listOfItems.length - 1
-
-  const canSwipe = currentIndex >= 0
-
+  const canSwipe = currentIndex >= 0;
 
   const swiped = (
     direction: string,
@@ -70,38 +79,64 @@ const TinderCards = () => {
     updateCurrentIndex(index - 1);
   };
 
-console.log(lastDirection)
-console.log(currentIndex)
+  console.log(lastDirection);
+  console.log(currentIndex);
 
-const swipe = async (dir:string) => {
-  if (canSwipe && currentIndex < LISTOBJECT!.listOfItems.length) {
-    await childRefs[currentIndex].current.swipe(dir) // Swipe the card!
-  }
-}
+  const swipe = async (direction: Direction) => {
+    console.log("💕", canSwipe, childRefs, childRefs[currentIndex]);
+    
+    if (
+      canSwipe &&
+      currentIndex < LISTOBJECT!.listOfItems.length &&
+      childRefs[currentIndex]!.current
+    ) {
+      await childRefs[currentIndex]!.current!.swipe(direction); // Swipe the card!
+    }
+  };
 
-  const renderCards = LISTOBJECT!.listOfItems.map((item: Item, index: number) => {
-    return (
-      <TinderCard
-        className="swipe absolute"
-        key={item.id}
-        preventSwipe={["up"]}
-        onSwipe={(dir) => swiped(dir, item.name, index, item.id)}
-      >
-        <div className="h-600 w-400 bg-supple flexCenter border-2 border-blackish rounded-2xl ">
-          <h2 className="text-blackish self-center uppercase font-title text-4xl p-20" >{item.name}</h2>
-          <p className="w-full text-center font-bodyRegular text-blackish pb-20">
-            Does this give you joy? ✨
-          </p>
-          {/* {item.picture? 
+  const renderCards = LISTOBJECT!.listOfItems.map(
+    (item: Item, index: number) => {
+      return (
+        <TinderCard
+          ref={childRefs[index]}
+          className="swipe absolute"
+          key={item.id}
+          preventSwipe={["up"]}
+          onSwipe={(dir) => swiped(dir, item.name, index, item.id)}
+          // onCardLeftScreen={() => outOfFrame(character.name, index)}
+        >
+          <div
+            id={item.id}
+            className="h-600 w-400 flexCenter rounded-2xl border-2 border-blackish bg-supple "
+          >
+            <h2 className="self-center p-20 font-title text-4xl uppercase text-blackish">
+              {item.name}
+            </h2>
+            <p className="w-full pb-20 text-center font-bodyRegular text-blackish">
+              Does this give you joy? ✨
+            </p>
+            {/* {item.picture? 
          <img src={`data:image/png;base64,${item.picture}`} alt="" />: ""
          }  */}
-        </div>
-      </TinderCard>
-    );
-  });
+          </div>
+        </TinderCard>
+      );
+    }
+  );
 
-  return ( <>{renderCards}
-  <BottomBar leftAction={()=>{swipe('left')}} rightAction={()=>{swipe('right')}}/></>)
+  return (
+    <>
+      {renderCards}
+      <BottomBar
+        leftAction={() => {
+          swipe('left');
+        }}
+        rightAction={() => {
+          swipe('right');
+        }}
+      />
+    </>
+  );
 };
 
 export default TinderCards;
