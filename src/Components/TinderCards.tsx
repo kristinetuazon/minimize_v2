@@ -27,35 +27,28 @@ const TinderCard = dynamic(
 
 const TinderCards = () => {
   const contextValue = useContext<GlobalContextType>(GlobalContext);
-  const {
-    LISTOBJECT,
-    yesList,
-    noList,
-    setYesList,
-    setNoList,
-  } = contextValue;
+  const { LISTOBJECT, yesList, noList, setYesList, setNoList } = contextValue;
   const [currentIndex, setCurrentIndex] = useState<number>(
-    LISTOBJECT!.listOfItems.length-1 
+    LISTOBJECT!.listOfItems.length - 1
   );
   const [lastDirection, setLastDirection] = useState<string>("");
   const currentIndexRef = useRef<number>(currentIndex);
+  const tinderCardRef = useRef<RefObject<API>>(null);
 
+  
   const updateCurrentIndex = (val: number) => {
     setCurrentIndex(val);
     currentIndexRef.current = val;
   };
 
-  
+  // const childRefs: RefObject<API>[] = useMemo(
+  //   () =>
+  //     Array(LISTOBJECT!.listOfItems.length)
+  //       .fill(0)
+  //       .map((i) => React.createRef()),
+  //   []
+  // );
 
-  const childRefs: RefObject<API>[] = useMemo(
-    () =>
-      Array(LISTOBJECT!.listOfItems.length)
-        .fill(0)
-        .map((i) => React.createRef()),
-    []
-  );
-
- 
   // const canGoBack = currentIndex < LISTOBJECT!.listOfItems.length - 1
 
   const canSwipe = currentIndex >= 0;
@@ -79,30 +72,41 @@ const TinderCards = () => {
     updateCurrentIndex(index - 1);
   };
 
-  console.log(lastDirection);
-  console.log(currentIndex);
+  // console.log(lastDirection);
+  // console.log(currentIndex);
 
-  const swipe = async (direction: Direction) => {
-    console.log("💕", canSwipe, childRefs, childRefs[currentIndex]);
-    
-    if (
-      canSwipe &&
-      currentIndex < LISTOBJECT!.listOfItems.length &&
-      childRefs[currentIndex]!.current
-    ) {
-      await childRefs[currentIndex]!.current!.swipe(direction); // Swipe the card!
-    }
-  };
+  // const swipe = async (direction: Direction) => {
+  //   console.log("💕", canSwipe, childRefs, childRefs[currentIndex]);
+
+  //   if (
+  //     canSwipe &&
+  //     currentIndex < LISTOBJECT!.listOfItems.length &&
+  //     childRefs[currentIndex]!.current
+  //   ) {
+  //     await childRefs[currentIndex]!.current!.swipe(direction); // Swipe the card!
+  //   }
+  // };
+
+
 
   const renderCards = LISTOBJECT!.listOfItems.map(
     (item: Item, index: number) => {
       return (
         <TinderCard
-          ref={childRefs[index]}
           className="swipe absolute"
           key={item.id}
           preventSwipe={["up"]}
           onSwipe={(dir) => swiped(dir, item.name, index, item.id)}
+          onKeyDown={(e:KeyboardEvent) => {
+            console.log(e.code)
+            if (e.code === "ArrowLeft") {
+              swiped("left", item.name, index, item.id)
+              console.log("left", item.name, index, item.id)
+            }
+          if (e.code ==="ArrowRight") {
+            swiped("right", item.name, index, item.id)
+            console.log("right", item.name, index, item.id)
+          }}}
           // onCardLeftScreen={() => outOfFrame(character.name, index)}
         >
           <div
@@ -127,14 +131,14 @@ const TinderCards = () => {
   return (
     <>
       {renderCards}
-      <BottomBar
+      {/* <BottomBar
         leftAction={() => {
-          swipe('left');
+          swipe("left");
         }}
         rightAction={() => {
-          swipe('right');
+          swipe("right");
         }}
-      />
+      /> */}
     </>
   );
 };
