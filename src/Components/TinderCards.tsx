@@ -97,7 +97,7 @@ const TinderCards = () => {
           key={item.id}
           preventSwipe={["up"]}
           onSwipe={(dir) => swiped(dir, item.name, index, item.id)}
-          onKeyDown={(e:KeyboardEvent) => {
+          onKeyDown={(e: React.KeyboardEvent<HTMLImageElement>) => {
             console.log(e.code)
             if (e.code === "ArrowLeft") {
               swiped("left", item.name, index, item.id)
