@@ -7,6 +7,7 @@ import { useState } from "react";
 import { type Item, type List } from "../types/global";
 import { v4 as uuidv4 } from "uuid";
 import NavBar from "../Components/NavBar";
+// import {Provider} from "next-auth/react"
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [list, setList] = useState<Item[]>([]);

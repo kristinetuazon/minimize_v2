@@ -41,6 +41,7 @@ const TinderCards = () => {
     currentIndexRef.current = val;
   };
 
+
   // const childRefs: RefObject<API>[] = useMemo(
   //   () =>
   //     Array(LISTOBJECT!.listOfItems.length)
@@ -66,7 +67,7 @@ const TinderCards = () => {
       setYesList!([...yesList!, { id: id, name: nameToDelete }]);
     }
     // if (direction === "down") {
-    //   setMaybeList!([...maybeList!, { id: id, name: nameToDelete }]);
+    //   setMgitaybeList!([...maybeList!, { id: id, name: nameToDelete }]);
     // }
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
