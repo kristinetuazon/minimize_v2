@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { actions, reportStorageFull, useAppState, useHydrated, useStorageFull } from "@/lib/store";
+import { requestPersistence } from "@/lib/persist";
 import { showToast } from "@/lib/toast";
 
 /**
@@ -17,6 +18,12 @@ export function Housekeeping() {
   useEffect(() => {
     if (hydrated && autoArchive && autoArchive !== "off") actions.runAutoArchive();
   }, [hydrated, lists, autoArchive]);
+
+  // Once there's something worth keeping, ask the browser to protect it.
+  const hasLists = Object.keys(lists).length > 0;
+  useEffect(() => {
+    if (hydrated && hasLists) void requestPersistence();
+  }, [hydrated, hasLists]);
 
   if (!full || dismissed) return null;
 

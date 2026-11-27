@@ -64,7 +64,7 @@ function single(list: ListState, seenIntros: string[] = []): AppState {
 }
 
 /** Reads saved data, upgrading older formats. */
-function parse(raw: string | null): AppState | null {
+export function parse(raw: string | null): AppState | null {
   if (!raw) return null;
   try {
     const data = JSON.parse(raw) as Partial<AppState> & Partial<V2> & V1;
@@ -85,6 +85,7 @@ function parse(raw: string | null): AppState | null {
         seenAltitude: data.seenAltitude,
         archived: data.archived,
         autoArchive: data.autoArchive,
+        lastBackupAt: data.lastBackupAt,
       };
     }
 
@@ -326,6 +327,16 @@ export const actions = {
     }),
 
   setAutoArchive: (autoArchive: AutoArchive) => update((s) => ({ ...s, autoArchive })),
+
+  markBackedUp: () => update((s) => ({ ...s, lastBackupAt: Date.now() })),
+
+  /** Replaces everything with a restored backup (run through the same upgrade path as saved data). */
+  replaceAll: (data: unknown) => {
+    const next = parse(JSON.stringify(data));
+    if (!next) return false;
+    update(() => ({ ...next, lastBackupAt: Date.now() }));
+    return true;
+  },
 
   /** Applies the auto-archive setting. Photos of archived lists are deleted. */
   runAutoArchive: () => {
@@ -682,4 +693,10 @@ export function useArchived() {
     }),
     [archived, autoArchive]
   );
+}
+
+/** The saved state as it is right now (for backups). */
+export function snapshot(): AppState {
+  load();
+  return state;
 }

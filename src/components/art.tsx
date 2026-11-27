@@ -426,28 +426,51 @@ export function Scenery({
           {ground ? <CloudSea y={206} /> : null}
         </g>
       );
-    case 4: // Mountain peaks with snow caps through the clouds
-      if (!ground) return null;
+    case 4: // Mountain peaks: a soft back range, a front range with snow caps and shaded faces
       return (
-        <g stroke="var(--ink)" strokeWidth="1.3">
-          <path d="M-10 240l56-82 30 40 42-70 46 112z" fill="var(--paper)" />
-          <path d="M186 240l58-92 34 52 50-48v88z" fill="var(--paper)" />
-          {/* Snow caps */}
-          <path
-            d="M108 128l-10 16 6-2 4 6 4-6 6 3z"
-            fill="var(--paper)"
-            strokeWidth="1"
-          />
-          <path
-            d="M244 148l-10 16 6-2 4 5 4-5 6 2zM36 172l10-14 9 14-5-2-4 4-4-4z"
-            fill="var(--paper)"
-            strokeWidth="1"
-          />
-          {/* Ridge hatching */}
-          <g strokeWidth="0.7" opacity="0.5">
-            <path d="M118 150l12 24M124 150l12 26M130 152l12 28M256 166l10 20M262 168l10 22M268 172l8 18M50 172l8 14M56 176l8 14" />
-          </g>
-          <CloudSea y={214} />
+        <g strokeLinejoin="round">
+          {sky ? (
+            <>
+              <Cloud x={232} y={40} s={0.85} />
+              <Birds x={58} y={70} />
+            </>
+          ) : null}
+          {ground ? (
+            <>
+              {/* Back range */}
+              <path
+                d="M-10 240L40 168 70 190 112 140 150 186 184 158 220 196 262 150 300 182 330 160V240z"
+                fill="color-mix(in oklab, var(--card) 22%, var(--paper))"
+                stroke="var(--ink)"
+                strokeWidth="1"
+                opacity="0.8"
+              />
+              <g fill="var(--paper)" stroke="var(--ink)" strokeWidth="0.8">
+                <path d="M112 140L103.6 150 109 147 113 152 119.6 149.2z" />
+                <path d="M262 150L253.6 159.2 259 156 264 161 269.6 156.4z" />
+              </g>
+              {/* Front range */}
+              <g fill="color-mix(in oklab, var(--card) 45%, var(--paper))" stroke="var(--ink)" strokeWidth="1.3">
+                <path d="M-10 240L44 176 78 208 106 186 150 240z" />
+                <path d="M170 240L214 180 240 204 272 160 330 228V240z" />
+              </g>
+              {/* The shaded side of each front peak (two-tone) */}
+              <g fill="var(--ink)" opacity="0.1" stroke="none">
+                <path d="M44 176L78 208V240H44z" />
+                <path d="M106 186L150 240H106z" />
+                <path d="M214 180L240 204V240H214z" />
+                <path d="M272 160L330 228V240H272z" />
+              </g>
+              {/* Snow caps */}
+              <g fill="var(--paper)" stroke="var(--ink)" strokeWidth="1">
+                <path d="M44 176L28.9 193.9 35 189 40 195 47 188 53.5 185z" />
+                <path d="M106 186L99 191.5 104 190 108 195 113 194 117 199.5z" />
+                <path d="M214 180L203 195 209 191 214 196 218 190 220.5 186z" />
+                <path d="M272 160L262.4 173.2 268 170 274 176 280 172 289.4 180.4z" />
+              </g>
+              <CloudSea y={222} />
+            </>
+          ) : null}
         </g>
       );
     case 5: // Aurora curtains

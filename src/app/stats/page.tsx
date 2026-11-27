@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   AltitudeCaption,
   BalloonScene,
@@ -7,6 +8,7 @@ import {
   useAltitude,
 } from "@/components/Balloon";
 import { Sparkles } from "@/components/Illustrations";
+import { DataPanel } from "@/components/DataPanel";
 import { CountUp } from "@/components/motion";
 import { Postcard } from "@/components/Postcard";
 import { Button, Card, PageShell, Panel } from "@/components/ui";
@@ -159,6 +161,13 @@ export default function StatsPage() {
           </p>
         </>
       )}
+      {stats.hydrated ? <DataPanel /> : null}
+      <p data-reveal className="text-center text-sm">
+        <Link href="/about" className="underline underline-offset-4">
+          About Minimize
+        </Link>{" "}
+        · why it exists and how your data is kept
+      </p>
     </PageShell>
   );
 }

@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DESTINATIONS } from "@/lib/content";
 import { actions, summarize, useList, useStats } from "@/lib/store";
 import type { ListState } from "@/lib/types";
 import { AltitudeCaption, useAltitude } from "./Balloon";
+import { useBackupDue } from "./DataPanel";
 import { Button, Card } from "./ui";
 
 type Step = {
@@ -84,6 +86,7 @@ export function NextStep() {
   const { list, hydrated } = useList();
   const { waiting } = useStats();
   const altitude = useAltitude();
+  const backupDue = useBackupDue();
 
   const startNew = () => {
     actions.newList();
@@ -136,6 +139,18 @@ export function NextStep() {
           <AltitudeCaption altitude={altitude} waiting={altitude.waiting} />
         </div>
       </Card>
+
+      {backupDue ? (
+        <p className="mt-3 rounded-md bg-paper/85 px-3 py-2 text-center text-sm backdrop-blur-sm">
+          💾 Your lists only live on this device.{" "}
+          <Link
+            href="/stats#your-data"
+            className="underline underline-offset-4"
+          >
+            Make a backup
+          </Link>
+        </p>
+      ) : null}
 
       {others.length > 0 ? (
         <div className="mt-4 rounded-md border-2 border-ink/15 bg-paper/85 p-3 text-sm backdrop-blur-sm">
