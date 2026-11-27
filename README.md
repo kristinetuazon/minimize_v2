@@ -9,7 +9,7 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 
 ## Features
 - **List** – name your list, add items one by one, paste a whole list at once, or start from a template
-- **Sort** – swipe cards right to keep, left to let go, up for maybe (or use the buttons / ← ↑ → keys), with undo and a second round for maybes
+- **Sort** – swipe cards right to keep, left to let go, up for maybe (or use the buttons / ← ↑ → keys), with undo, a second round for maybes, and a guide with tips matched to what you're sorting
 - **Act** – pick a plan for each let-go item (donate, sell, give, recycle, throw away), tick it off, and track progress
 - **Multiple lists** – keep as many lists as you like and pick any back up where you left off
 - **Camera** – snap items one after another with the in-app camera; name them now or later

@@ -1,7 +1,8 @@
 "use client";
 
+import { Sparkles } from "@/components/Illustrations";
 import { Confetti, CountUp } from "@/components/motion";
-import { Button, Card, PageShell } from "@/components/ui";
+import { Button, Card, PageShell, Panel } from "@/components/ui";
 import { DESTINATIONS } from "@/lib/content";
 import { useStats } from "@/lib/store";
 
@@ -11,12 +12,13 @@ export default function StatsPage() {
 
   return (
     <PageShell>
-      <h1 data-reveal className="font-title text-5xl uppercase">
+      <h1 data-reveal className="font-title text-5xl leading-tight">
         Your progress
       </h1>
 
       {!stats.hydrated ? null : stats.sorted === 0 ? (
         <Card reveal className="text-center">
+          <Sparkles />
           <p className="mb-4 text-lg">Nothing sorted yet. Your totals will show up here.</p>
           <Button href="/list">Start a list</Button>
         </Card>
@@ -42,8 +44,8 @@ export default function StatsPage() {
 
           {Object.keys(stats.byDestination).length > 0 ? (
             <section data-reveal>
-              <Card>
-                <h2 className="mb-4 font-title text-4xl uppercase">Where it went</h2>
+              <Panel>
+                <h2 className="mb-4 font-title text-3xl uppercase">Where it went</h2>
                 <ul className="flex flex-col gap-3">
                   {DESTINATIONS.filter((d) => stats.byDestination[d.value]).map((d) => {
                     const n = stats.byDestination[d.value] ?? 0;
@@ -60,7 +62,7 @@ export default function StatsPage() {
                     );
                   })}
                 </ul>
-              </Card>
+              </Panel>
             </section>
           ) : null}
 
@@ -75,7 +77,7 @@ export default function StatsPage() {
 
 function Stat({ label, value, tone = "" }: { label: string; value: number; tone?: string }) {
   return (
-    <div className="border-2 border-ink bg-paper px-2 py-4">
+    <div className="border-2 border-ink/25 bg-paper px-2 py-4">
       <p className={`font-title text-4xl leading-none ${tone}`}>
         <CountUp value={value} />
       </p>

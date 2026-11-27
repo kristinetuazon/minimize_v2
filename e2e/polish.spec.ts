@@ -1,3 +1,4 @@
+import { showTab } from "./helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 async function makeList(page: Page, name: string, items: string[]) {
@@ -86,6 +87,7 @@ test("keep-only-N: narrow down until under the limit", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /all sorted/i })).toBeVisible();
 
   await page.getByRole("link", { name: /see results/i }).click();
+  await showTab(page, "Keep");
   const keep = page.locator("section", { has: page.getByRole("heading", { name: /^keep/i }) });
   await expect(keep.getByText("Boots")).toBeVisible();
   await expect(page.getByText(/over your limit/i)).toHaveCount(0);
@@ -115,10 +117,22 @@ test("reminders on home, and lifetime stats that survive deleting a list", async
   await page.getByRole("checkbox", { name: "Mark Paint cans as gone" }).check();
 
   await page.goto("/");
-  const reminder = page.getByRole("complementary", { name: "Waiting to go" });
-  await expect(reminder).toContainText("1 thing still waiting to go");
-  await expect(reminder).toContainText("1 sell");
-  await reminder.getByRole("button", { name: /garage/i }).click();
+  // Home shows one next step for the current list.
+  const next = page.getByRole("region", { name: "Next step" });
+  await expect(next).toContainText("Let go of 1 thing");
+  await expect(next).toContainText("1 to sell");
+  await next.getByRole("link", { name: /let go/i }).click();
+  await expect(page).toHaveURL(/\/results$/);
+
+  // Start another list: home now points at it, and Garage shows as "also waiting".
+  await page.goto("/");
+  await next.getByRole("button", { name: "New list" }).click();
+  await page.getByLabel("Items", { exact: true }).fill("Rake");
+  await page.getByLabel("Items", { exact: true }).press("Enter");
+  await page.goto("/");
+  await expect(next).toContainText("Keep sorting");
+  await expect(next).toContainText("0 of 1 sorted");
+  await next.getByRole("button", { name: /garage · 1/i }).click();
   await expect(page).toHaveURL(/\/results$/);
 
   await page.goto("/stats");

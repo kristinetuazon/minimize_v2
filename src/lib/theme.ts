@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react";
 /*
  * Day / night theme. "system" (no saved choice) follows the device setting.
  * The choice lives in localStorage and is applied as <html data-theme="…">
- * by THEME_SCRIPT before the first paint, so there's never a flash.
+ * by public/theme-init.js before the first paint, so there's never a flash.
  */
 
 export type ThemeChoice = "light" | "dark" | "system";
@@ -15,8 +15,7 @@ const KEY = "minimize:theme";
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 const THEME_COLORS: Record<Theme, string> = { light: "#f6f0f1", dark: "#1b181c" };
 
-/** Inline, pre-paint: apply a saved choice (and flag that JS is running). */
-export const THEME_SCRIPT = `(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('${KEY}');if(t==='light'||t==='dark')d.dataset.theme=t;}catch(e){}})();`;
+// The pre-paint part lives in public/theme-init.js (same storage key).
 
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());

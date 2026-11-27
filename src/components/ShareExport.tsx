@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { downloadFile, fileSlug, resultsCsv, resultsText, shareLink } from "@/lib/share";
 import { showToast } from "@/lib/toast";
 import type { ListState } from "@/lib/types";
-import { Card } from "./ui";
+import { Panel } from "./ui";
 
 async function copy(text: string) {
   try {
@@ -57,8 +57,8 @@ export function ShareExport({ list }: { list: ListState }) {
 
   return (
     <section data-reveal className="print:hidden">
-      <Card>
-        <h2 className="mb-4 font-title text-4xl uppercase">Share & export</h2>
+      <Panel>
+        <h2 className="mb-4 font-title text-3xl uppercase">Share & export</h2>
         <div className="grid grid-cols-2 gap-3">
           <button type="button" className={btn} onClick={shareResults}>
             {canShare ? "📤 Share results" : "📋 Copy results"}
@@ -80,7 +80,7 @@ export function ShareExport({ list }: { list: ListState }) {
         <p className="mt-3 text-sm opacity-75">
           “Invite to sort” sends the list (no photos or decisions) so someone else can sort it themselves.
         </p>
-      </Card>
+      </Panel>
     </section>
   );
 }

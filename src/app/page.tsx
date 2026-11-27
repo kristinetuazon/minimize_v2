@@ -1,19 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { HeroTitle } from "@/components/HeroTitle";
-import { useReveal } from "@/components/motion";
 import { InstallButton } from "@/components/InstallButton";
-import { Reminders } from "@/components/Reminders";
-import { Button } from "@/components/ui";
-import { actions, resumeHref, useList, useLists } from "@/lib/store";
+import { useReveal } from "@/components/motion";
+import { NextStep } from "@/components/NextStep";
+import { useLists } from "@/lib/store";
 
+/**
+ * Home: the title, then exactly one thing to do. First-timers get the pitch
+ * and "Start a list"; returning people get their next step instead. Lists and
+ * Progress live in the main navigation, so they aren't repeated here.
+ */
 export default function Home() {
-  const router = useRouter();
-  const { list, hydrated } = useList();
-  const { lists } = useLists();
-  const hasCurrent = hydrated && list.items.length > 0;
+  const { lists, hydrated } = useLists();
+  const returning = hydrated && lists.length > 0;
   const mainRef = useRef<HTMLElement>(null);
   // Anything that appears after the intro (e.g. once saved lists load) fades in too.
   useReveal(mainRef);
@@ -21,48 +22,21 @@ export default function Home() {
   return (
     <main
       ref={mainRef}
-      className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-3xl flex-col items-center justify-center gap-6 px-4 pb-16 text-center"
+      className="mx-auto flex min-h-[calc(100dvh-9rem)] max-w-3xl flex-col items-center justify-center gap-6 px-4 pt-8 pb-16 text-center sm:min-h-[calc(100dvh-4rem)] sm:pt-0"
     >
       <HeroTitle />
       <p data-reveal className="font-heading text-xl sm:text-2xl">
         curate, sort, free your life
       </p>
-      <p data-reveal className="max-w-md text-lg leading-relaxed">
-        List the things you want to declutter, swipe through them one at a time,
-        and walk away with a plan for what stays and what goes.
-      </p>
+      {returning ? null : (
+        <p data-reveal className="max-w-md text-lg leading-relaxed">
+          List the things you want to declutter, swipe through them one at a time, and walk away
+          with a plan for what stays and what goes.
+        </p>
+      )}
 
-      {/* One group, so buttons that appear after saved data loads arrive together. */}
-      <div data-reveal className="mt-4 flex flex-col items-center gap-4">
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          {hasCurrent ? (
-            <Button href={resumeHref(list)}>
-              Continue {list.listName ? `“${list.listName}”` : "your list"}
-            </Button>
-          ) : null}
-          <Button
-            variant={hasCurrent ? "secondary" : "primary"}
-            onClick={() => {
-              actions.newList();
-              router.push("/list");
-            }}
-          >
-            {hasCurrent ? "New list" : "Start a list"}
-          </Button>
-        </div>
-        {hydrated && lists.length > 0 ? (
-          <div className="flex gap-6">
-            {lists.length > 1 ? (
-              <Button variant="ghost" href="/lists">
-                All your lists ({lists.length})
-              </Button>
-            ) : null}
-            <Button variant="ghost" href="/stats">
-              Your progress
-            </Button>
-          </div>
-        ) : null}
-        <Reminders />
+      <div data-reveal className="mt-4 flex w-full flex-col items-center gap-4">
+        <NextStep />
         <InstallButton />
       </div>
     </main>

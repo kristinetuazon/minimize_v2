@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import Script from "next/script";
+import { HeaderLinks, TabBar } from "@/components/Nav";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Toaster } from "@/components/Toaster";
-import { THEME_SCRIPT } from "@/lib/theme";
 import { bodyFont, headingFont, titleFont } from "./fonts";
 import "./globals.css";
 
@@ -32,23 +32,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         {/* Applies the saved day/night choice and the `js` flag before first paint. */}
-        <Script id="theme" strategy="beforeInteractive">
-          {THEME_SCRIPT}
-        </Script>
+        <Script id="theme" src="/theme-init.js" strategy="beforeInteractive" />
       </head>
       <body className="min-h-dvh">
-        <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 pt-5 sm:px-6 print:hidden">
+        <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 pt-5 sm:px-6 print:hidden">
           <Link href="/" className="font-title text-4xl leading-none" aria-label="Minimize home">
             MNMZ
           </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/lists" className="font-heading text-sm uppercase underline-offset-4 hover:underline">
-              Your lists
-            </Link>
+          <div className="flex items-center gap-5">
+            <HeaderLinks />
             <ThemeToggle />
           </div>
         </header>
-        {children}
+        {/* Room for the phone tab bar. */}
+        <div className="pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pb-0">{children}</div>
+        <TabBar />
         <Toaster />
         <ServiceWorker />
       </body>

@@ -1,5 +1,6 @@
 "use client";
 
+import { EmptyBox } from "@/components/Illustrations";
 import { useRouter } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import { Button, Card, PageShell } from "@/components/ui";
@@ -21,8 +22,9 @@ export default function ImportPage() {
   if (!shared) {
     return (
       <PageShell>
-        <h1 data-reveal className="font-title text-5xl uppercase">Link not found</h1>
+        <h1 data-reveal className="font-title text-5xl leading-tight">Link not found</h1>
         <Card reveal className="text-center">
+          <EmptyBox />
           <p className="mb-4 text-lg">This share link looks incomplete. Ask for it again, or start your own list.</p>
           <Button href="/">Go home</Button>
         </Card>
@@ -32,7 +34,7 @@ export default function ImportPage() {
 
   return (
     <PageShell>
-      <h1 data-reveal className="font-title text-5xl uppercase">A list for you</h1>
+      <h1 data-reveal className="font-title text-5xl leading-tight">A list for you</h1>
       <Card reveal className="flex flex-col gap-4">
         <h2 className="text-right font-title text-4xl uppercase">{shared.listName || "Shared list"}</h2>
         {shared.description ? <p className="text-center">{shared.description}</p> : null}

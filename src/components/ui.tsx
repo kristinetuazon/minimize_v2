@@ -45,7 +45,10 @@ export function Button({
   );
 }
 
-/** The signature bordered pink panel. */
+/**
+ * The signature bordered pink card, with an offset shadow. Use it for the one
+ * main thing on a screen; use Panel for everything secondary.
+ */
 export function Card({
   children,
   className = "",
@@ -57,17 +60,41 @@ export function Card({
   reveal?: boolean;
 }) {
   return (
-    <div data-reveal={reveal || undefined} className={`border-2 border-ink bg-card p-6 sm:p-8 ${className}`}>
+    <div
+      data-reveal={reveal || undefined}
+      className={`border-2 border-ink bg-card p-6 shadow-[5px_5px_0_var(--ink)] sm:p-8 ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** A quieter container for secondary content. */
+export function Panel({
+  children,
+  className = "",
+  reveal = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  reveal?: boolean;
+}) {
+  return (
+    <div data-reveal={reveal || undefined} className={`border-2 border-ink/25 bg-paper p-5 sm:p-6 ${className}`}>
       {children}
     </div>
   );
 }
 
 /** Page layout. Direct children with `data-reveal` animate in (see Reveal). */
-export function PageShell({ children }: { children: React.ReactNode }) {
+export function PageShell({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) {
   return (
     <Reveal className="contents">
-      <main className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 pt-6 pb-16 sm:px-6">{children}</main>
+      <main
+        className={`mx-auto flex w-full max-w-xl flex-col gap-6 px-4 pt-6 pb-16 sm:px-6 ${wide ? "lg:max-w-6xl" : ""}`}
+      >
+        {children}
+      </main>
     </Reveal>
   );
 }
