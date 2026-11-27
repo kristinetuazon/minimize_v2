@@ -12,7 +12,10 @@ export type Destination = "donate" | "sell" | "gift" | "recycle" | "trash";
 /** What the person plans to do with a let-go item, and whether it's done. */
 export type Outcome = {
   destination?: Destination;
+  /** Let-go item: it's gone. */
   done?: boolean;
+  /** Kept item in checklist mode: packed / put away. */
+  packed?: boolean;
 };
 
 export type HistoryEntry = {
@@ -30,6 +33,10 @@ export type ListState = {
   /** Every decision change, newest last, so undo can step back. */
   history: HistoryEntry[];
   outcomes: Record<string, Outcome>;
+  /** Keep-only-N mode: the most items the person can keep. */
+  keepLimit?: number;
+  /** Show the Keep list as a packing checklist. */
+  checklist?: boolean;
   createdAt: number;
   updatedAt: number;
 };
@@ -42,6 +49,18 @@ export type AppState = {
   currentId: string | null;
   /** Intro panels the person has already read. */
   seenIntros: string[];
+  /** Totals from deleted lists, so lifetime stats survive deleting. */
+  archive?: ArchivedStats;
+};
+
+export type ArchivedStats = {
+  lists: number;
+  /** Deleted lists that had been fully sorted (no unsorted items or maybes). */
+  finished?: number;
+  kept: number;
+  letgo: number;
+  gone: number;
+  byDestination: Partial<Record<Destination, number>>;
 };
 
 /** What a share link carries: the list itself, never decisions or photos. */

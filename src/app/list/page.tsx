@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { CameraCapture } from "@/components/CameraCapture";
+import { EditableName } from "@/components/EditableName";
 import { Intro } from "@/components/Intro";
 import { animateOut } from "@/components/motion";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
@@ -9,10 +11,12 @@ import { Stepper } from "@/components/Stepper";
 import { Button, Card, PageShell, inputClasses } from "@/components/ui";
 import { TEMPLATES, splitItems } from "@/lib/content";
 import { actions, useList } from "@/lib/store";
+import { showToast } from "@/lib/toast";
 
 export default function ListPage() {
   const { list } = useList();
   const [draft, setDraft] = useState("");
+  const [camera, setCamera] = useState(false);
   const count = list.items.length;
 
   function submit(e: React.FormEvent) {
@@ -70,6 +74,27 @@ export default function ListPage() {
         </div>
 
         <div>
+          <label htmlFor="keep-limit" className="mb-2 block font-heading">
+            Keep at most <span className="font-body text-sm opacity-70">(optional)</span>
+          </label>
+          <div className="flex items-center gap-3">
+            <input
+              id="keep-limit"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              placeholder="No limit"
+              className={`${inputClasses} w-32`}
+              value={list.keepLimit ?? ""}
+              onChange={(e) => actions.setKeepLimit(e.target.value ? Number(e.target.value) : undefined)}
+            />
+            <span className="text-sm opacity-75">
+              e.g. “only 10 things fit in the suitcase”. You&apos;ll narrow down if you keep more.
+            </span>
+          </div>
+        </div>
+
+        <div>
           <label htmlFor="list-item" className="mb-2 block font-heading">
             Items
           </label>
@@ -92,6 +117,13 @@ export default function ListPage() {
               +
             </button>
           </form>
+          <button
+            type="button"
+            onClick={() => setCamera(true)}
+            className="mt-3 flex w-full items-center justify-center gap-2 border-2 border-dashed border-ink/60 bg-paper/50 px-4 py-3 font-heading text-sm uppercase hover:bg-sand"
+          >
+            <span aria-hidden>📷</span> Snap items with the camera
+          </button>
           <p className="mt-2 text-sm opacity-75">
             Press Enter to add. Pasting several lines (or a comma-separated list) adds them all.
             Tap 📷 to add a photo.
@@ -128,16 +160,16 @@ export default function ListPage() {
                 type="button"
                 className="text-sm underline underline-offset-4"
                 onClick={() => {
-                  if (!window.confirm("Remove all items from this list?")) return;
+                  const clear = () => showToast(`Cleared ${count} item${count === 1 ? "" : "s"}`, actions.clearItems());
                   const rows = document.querySelectorAll("#item-list > li");
-                  if (prefersReducedMotion() || rows.length === 0) return actions.clearItems();
+                  if (prefersReducedMotion() || rows.length === 0) return clear();
                   gsap.to(rows, {
                     x: 40,
                     autoAlpha: 0,
                     duration: 0.2,
                     stagger: { each: 0.03, from: "end" },
                     ease: "power2.in",
-                    onComplete: actions.clearItems,
+                    onComplete: clear,
                   });
                 }}
               >
@@ -148,11 +180,17 @@ export default function ListPage() {
               {list.items.map((item) => (
                 <li key={item.id} data-reveal className="flex items-center gap-3 overflow-hidden px-3 py-2">
                   <PhotoControl item={item} />
-                  <span className="min-w-0 flex-1 break-words">{item.name}</span>
+                  <span className="flex min-w-0 flex-1">
+                    <EditableName item={item} />
+                  </span>
                   <button
                     type="button"
                     aria-label={`Remove ${item.name}`}
-                    onClick={(e) => animateOut(e.currentTarget.closest("li"), () => actions.removeItem(item.id))}
+                    onClick={(e) =>
+                      animateOut(e.currentTarget.closest("li"), () =>
+                        showToast(`Removed “${item.name}”`, actions.removeItem(item.id))
+                      )
+                    }
                     className="size-9 shrink-0 rounded-full border-2 border-ink/60 text-xl hover:bg-sand"
                   >
                     −
@@ -163,6 +201,8 @@ export default function ListPage() {
           </div>
         )}
       </Card>
+
+      {camera ? <CameraCapture onClose={() => setCamera(false)} /> : null}
 
       <div data-reveal className="flex justify-end">
         <Button href="/sort" disabled={count === 0}>

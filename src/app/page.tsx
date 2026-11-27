@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { HeroTitle } from "@/components/HeroTitle";
 import { useReveal } from "@/components/motion";
 import { InstallButton } from "@/components/InstallButton";
+import { Reminders } from "@/components/Reminders";
 import { Button } from "@/components/ui";
 import { actions, resumeHref, useList, useLists } from "@/lib/store";
 
@@ -49,11 +50,19 @@ export default function Home() {
             {hasCurrent ? "New list" : "Start a list"}
           </Button>
         </div>
-        {hydrated && lists.length > 1 ? (
-          <Button variant="ghost" href="/lists">
-            All your lists ({lists.length})
-          </Button>
+        {hydrated && lists.length > 0 ? (
+          <div className="flex gap-6">
+            {lists.length > 1 ? (
+              <Button variant="ghost" href="/lists">
+                All your lists ({lists.length})
+              </Button>
+            ) : null}
+            <Button variant="ghost" href="/stats">
+              Your progress
+            </Button>
+          </div>
         ) : null}
+        <Reminders />
         <InstallButton />
       </div>
     </main>

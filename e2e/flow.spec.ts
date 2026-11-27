@@ -57,7 +57,7 @@ test("list → sort → act, with maybe, undo and persistence", async ({ page })
   await expect(letGo.getByText("Old hoodie")).toBeVisible();
 
   await page.getByLabel("Plan for Winter coat").selectOption("donate");
-  await letGo.getByRole("checkbox", { name: "Winter coat" }).check();
+  await letGo.getByRole("checkbox", { name: "Mark Winter coat as gone" }).check();
   await expect(letGo.getByText("1 / 2")).toBeVisible();
 
   // Everything survives a reload.

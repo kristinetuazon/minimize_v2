@@ -153,7 +153,17 @@ export function Confetti({ pieces = 36 }: { pieces?: number }) {
 }
 
 /** A bar that springs to `value / max`. GSAP owns its width. */
-export function ProgressBar({ value, max, label }: { value: number; max: number; label: string }) {
+export function ProgressBar({
+  value,
+  max,
+  label,
+  tone = "letgo",
+}: {
+  value: number;
+  max: number;
+  label: string;
+  tone?: "letgo" | "keep";
+}) {
   const fill = useRef<HTMLDivElement>(null);
   const pct = max > 0 ? (value / max) * 100 : 0;
 
@@ -174,7 +184,7 @@ export function ProgressBar({ value, max, label }: { value: number; max: number;
       aria-valuemax={max}
       aria-valuenow={value}
     >
-      <div ref={fill} className="h-full w-0 bg-letgo" />
+      <div ref={fill} className={`h-full w-0 ${tone === "keep" ? "bg-keep" : "bg-letgo"}`} />
     </div>
   );
 }

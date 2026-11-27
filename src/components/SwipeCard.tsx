@@ -1,7 +1,7 @@
 "use client";
 
 import { animate, motion, useMotionValue, useTransform, type PanInfo } from "motion/react";
-import { useImperativeHandle, useRef } from "react";
+import { useEffect, useImperativeHandle, useRef } from "react";
 import { usePhotoUrl } from "@/lib/photos";
 import type { Choice, Item } from "@/lib/types";
 
@@ -30,6 +30,20 @@ export function SwipeCard({ item, question, allowMaybe, reducedMotion, onDecide,
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const busy = useRef(false);
+  // The decision of a card that's mid-flight, saved even if the page changes
+  // before the fly-out animation finishes.
+  const pending = useRef<Choice | null>(null);
+  const decideRef = useRef(onDecide);
+  useEffect(() => {
+    decideRef.current = onDecide;
+  });
+  useEffect(
+    () => () => {
+      if (pending.current) decideRef.current(pending.current);
+      pending.current = null;
+    },
+    []
+  );
 
   const rotate = useTransform(x, [-300, 300], [-16, 16]);
   const keepOpacity = useTransform(x, [20, DISTANCE], [0, 1]);
@@ -40,6 +54,7 @@ export function SwipeCard({ item, question, allowMaybe, reducedMotion, onDecide,
     if (busy.current) return false;
     if (dir === "up" && !allowMaybe) return false;
     busy.current = true;
+    pending.current = CHOICE[dir];
     void flyOut(dir);
     return true;
   }
@@ -55,6 +70,8 @@ export function SwipeCard({ item, question, allowMaybe, reducedMotion, onDecide,
         animate(y, dir === "up" ? -window.innerHeight : y.get() + 40, opts),
       ]);
     }
+    if (!pending.current) return; // already saved on unmount
+    pending.current = null;
     onDecide(CHOICE[dir]);
   }
 

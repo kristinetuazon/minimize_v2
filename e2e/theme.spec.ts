@@ -9,7 +9,7 @@ test.describe("on a light device", () => {
 
   test("night mode toggles, persists across reloads, and can go back", async ({ page }) => {
     await page.goto("/list");
-    expect(await page.evaluate(bg)).toBe(DAY_BG);
+    await expect.poll(() => page.evaluate(bg)).toBe(DAY_BG);
 
     await page.getByRole("button", { name: "Switch to night mode" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -33,11 +33,11 @@ test.describe("on a dark device", () => {
 
   test("starts in night mode and can switch to day", async ({ page }) => {
     await page.goto("/");
-    expect(await page.evaluate(bg)).toBe(NIGHT_BG);
+    await expect.poll(() => page.evaluate(bg)).toBe(NIGHT_BG);
     await page.getByRole("button", { name: "Switch to day mode" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await expect.poll(() => page.evaluate(bg)).toBe(DAY_BG);
     await page.reload();
-    expect(await page.evaluate(bg)).toBe(DAY_BG);
+    await expect.poll(() => page.evaluate(bg)).toBe(DAY_BG);
   });
 });
