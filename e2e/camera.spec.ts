@@ -20,7 +20,7 @@ test("snap items with the in-app camera", async ({ page }) => {
 
   await camera.getByRole("button", { name: /done \(2\)/i }).click();
   await expect(camera).toHaveCount(0);
-  await expect(page.getByText("2 items")).toBeVisible();
+  await expect(page.getByText("2 items", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Rename Desk lamp" })).toBeVisible();
   await expect(page.locator("main li img")).toHaveCount(2);
 });

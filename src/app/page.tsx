@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { HeroTitle } from "@/components/HeroTitle";
+import { HomeSky } from "@/components/HomeSky";
 import { InstallButton } from "@/components/InstallButton";
 import { useReveal } from "@/components/motion";
 import { NextStep } from "@/components/NextStep";
@@ -20,25 +21,32 @@ export default function Home() {
   useReveal(mainRef);
 
   return (
-    <main
-      ref={mainRef}
-      className="mx-auto flex min-h-[calc(100dvh-9rem)] max-w-3xl flex-col items-center justify-center gap-6 px-4 pt-8 pb-16 text-center sm:min-h-[calc(100dvh-4rem)] sm:pt-0"
-    >
-      <HeroTitle />
-      <p data-reveal className="font-heading text-xl sm:text-2xl">
-        curate, sort, free your life
-      </p>
-      {returning ? null : (
-        <p data-reveal className="max-w-md text-lg leading-relaxed">
-          List the things you want to declutter, swipe through them one at a time, and walk away
-          with a plan for what stays and what goes.
+    // The sky fills the whole page and slides up behind the header.
+    <div className="relative isolate -mt-16 pt-16">
+      <HomeSky />
+      <main
+        ref={mainRef}
+        className="mx-auto flex min-h-[calc(100dvh-9rem)] max-w-3xl flex-col items-center justify-center gap-6 px-4 pt-8 pb-16 text-center sm:min-h-[calc(100dvh-4rem)] sm:pt-0"
+      >
+        <HeroTitle />
+        <p data-reveal className="font-heading text-xl sm:text-2xl">
+          curate, sort, free your life
         </p>
-      )}
+        {returning ? null : (
+          <p data-reveal className="max-w-md text-lg leading-relaxed">
+            List the things you want to declutter, swipe through them one at a
+            time, and walk away with a plan for what stays and what goes.
+          </p>
+        )}
 
-      <div data-reveal className="mt-4 flex w-full flex-col items-center gap-4">
-        <NextStep />
-        <InstallButton />
-      </div>
-    </main>
+        <div
+          data-reveal
+          className="mt-4 flex w-full flex-col items-center gap-4"
+        >
+          <NextStep />
+          <InstallButton />
+        </div>
+      </main>
+    </div>
   );
 }

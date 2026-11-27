@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import { deletePhotos, savePhoto, usePhotoUrl } from "@/lib/photos";
-import { actions } from "@/lib/store";
+import { actions, reportStorageFull } from "@/lib/store";
 import type { Item } from "@/lib/types";
 
 /** A square thumbnail of an item's photo, or nothing if it has none. */
@@ -31,8 +31,9 @@ export function PhotoControl({ item }: { item: Item }) {
     try {
       await savePhoto(item.id, file);
       actions.setItemPhoto(item.id, true);
-    } catch {
+    } catch (e) {
       setError(true);
+      if ((e as DOMException)?.name === "QuotaExceededError") reportStorageFull(true);
     } finally {
       setBusy(false);
     }

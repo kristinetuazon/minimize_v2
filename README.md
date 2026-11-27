@@ -17,6 +17,7 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 - **Rename anything** – tap an item's name to fix it; deletes can be undone from the toast
 - **Keep-only-N** – set a limit ("only 10 fit in the suitcase") and narrow down until you're under it
 - **Packing checklist** – tick off kept items as they go in the bag or back on the shelf
+- **Let go to rise** – a hot-air balloon climbs from the rooftops to the galaxy as you let things go; every finished list becomes a travel-poster postcard on your Journey page
 - **Reminders & progress** – see what's still waiting to go, and lifetime totals of what you've let go
 - **Share & export** – share or copy your results, download a CSV, print, or send an invite link so someone else can sort the same list
 - **Installable** – add it to your home screen; it works offline

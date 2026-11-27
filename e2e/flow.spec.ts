@@ -2,7 +2,7 @@ import { showTab } from "./helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 async function pasteItems(page: Page, text: string) {
-  const input = page.getByLabel("Items");
+  const input = page.getByLabel("Items", { exact: true });
   await input.focus();
   // Fire a real paste event with clipboard data.
   await input.evaluate((el, value) => {
@@ -22,9 +22,9 @@ test("list → sort → act, with maybe, undo and persistence", async ({ page })
 
   await page.getByLabel("Name of list").fill("Closet");
   await pasteItems(page, "Jeans\nWinter coat\nOld hoodie");
-  await page.getByLabel("Items").fill("Sneakers");
-  await page.getByLabel("Items").press("Enter");
-  await expect(page.getByText("4 items")).toBeVisible();
+  await page.getByLabel("Items", { exact: true }).fill("Sneakers");
+  await page.getByLabel("Items", { exact: true }).press("Enter");
+  await expect(page.getByText("4 items", { exact: true })).toBeVisible();
 
   await page.getByRole("link", { name: /start sorting/i }).click();
   await expect(page).toHaveURL(/\/sort$/);
@@ -76,7 +76,7 @@ test("templates fill an empty list", async ({ page }) => {
   await page.goto("/list");
   await page.getByRole("button", { name: "Weekend trip" }).click();
   await expect(page.getByLabel("Name of list")).toHaveValue("Weekend trip");
-  await expect(page.getByText("8 items")).toBeVisible();
+  await expect(page.getByText("8 items", { exact: true })).toBeVisible();
 });
 
 test("sort page with no items points back to the list", async ({ page }) => {

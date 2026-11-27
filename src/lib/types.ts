@@ -51,6 +51,25 @@ export type AppState = {
   seenIntros: string[];
   /** Totals from deleted lists, so lifetime stats survive deleting. */
   archive?: ArchivedStats;
+  /** Highest balloon altitude level already celebrated. */
+  seenAltitude?: number;
+  /** Completed lists moved out of the way. Kept (without photos) so they can be restored. */
+  archived?: Record<string, ArchivedList>;
+  autoArchive?: AutoArchive;
+};
+
+export type ArchivedList = ListState & { archivedAt: number };
+
+/** off · archive completed lists 30 days after they were finished · keep at most 8 lists in the sky */
+export type AutoArchive = "off" | "30d" | "full";
+
+/** A finished list, remembered as a travel poster on the Progress page. */
+export type Postcard = {
+  id: string;
+  name: string;
+  letgo: number;
+  kept: number;
+  date: number;
 };
 
 export type ArchivedStats = {
@@ -61,6 +80,8 @@ export type ArchivedStats = {
   letgo: number;
   gone: number;
   byDestination: Partial<Record<Destination, number>>;
+  /** Posters for deleted lists that had been finished. */
+  postcards?: Postcard[];
 };
 
 /** What a share link carries: the list itself, never decisions or photos. */

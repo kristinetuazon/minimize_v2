@@ -4,9 +4,16 @@ import { useRouter } from "next/navigation";
 import { DESTINATIONS } from "@/lib/content";
 import { actions, summarize, useList, useStats } from "@/lib/store";
 import type { ListState } from "@/lib/types";
+import { AltitudeCaption, useAltitude } from "./Balloon";
 import { Button, Card } from "./ui";
 
-type Step = { title: string; detail?: string; cta: string; href: string; progress?: number };
+type Step = {
+  title: string;
+  detail?: string;
+  cta: string;
+  href: string;
+  progress?: number;
+};
 
 /** The one thing to do next with the current list. */
 function stepFor(list: ListState): Step {
@@ -42,20 +49,30 @@ function stepFor(list: ListState): Step {
     const plans = new Map<string, number>();
     for (const item of letgo) {
       const o = list.outcomes[item.id];
-      if (!o?.done && o?.destination) plans.set(o.destination, (plans.get(o.destination) ?? 0) + 1);
+      if (!o?.done && o?.destination)
+        plans.set(o.destination, (plans.get(o.destination) ?? 0) + 1);
     }
     const planText = DESTINATIONS.filter((d) => plans.has(d.value))
-      .map((d) => `${plans.get(d.value)} to ${d.label.replace(/^\S+\s/, "").toLowerCase()}`)
+      .map(
+        (d) =>
+          `${plans.get(d.value)} to ${d.label.replace(/^\S+\s/, "").toLowerCase()}`,
+      )
       .join(" · ");
     return {
       title: `Let go of ${toGo} thing${toGo === 1 ? "" : "s"}`,
-      detail: planText || `From ${name}. Pick a plan for each and tick them off.`,
+      detail:
+        planText || `From ${name}. Pick a plan for each and tick them off.`,
       cta: "Let go",
       href: "/results",
       progress: handled / letgo.length,
     };
   }
-  return { title: `${list.listName || "Your list"} is done ✨`, detail: "Ready for the next one?", cta: "", href: "" };
+  return {
+    title: `${list.listName || "Your list"} is done ✨`,
+    detail: "Ready for the next one?",
+    cta: "",
+    href: "",
+  };
 }
 
 /**
@@ -66,6 +83,7 @@ export function NextStep() {
   const router = useRouter();
   const { list, hydrated } = useList();
   const { waiting } = useStats();
+  const altitude = useAltitude();
 
   const startNew = () => {
     actions.newList();
@@ -91,8 +109,14 @@ export function NextStep() {
           {step.detail ? <p className="mt-1">{step.detail}</p> : null}
         </div>
         {step.progress !== undefined ? (
-          <div className="h-2 overflow-hidden rounded-full bg-ink/15" aria-hidden>
-            <div className="h-full rounded-full bg-ink" style={{ width: `${Math.round(step.progress * 100)}%` }} />
+          <div
+            className="h-2 overflow-hidden rounded-full bg-ink/15"
+            aria-hidden
+          >
+            <div
+              className="h-full rounded-full bg-ink"
+              style={{ width: `${Math.round(step.progress * 100)}%` }}
+            />
           </div>
         ) : null}
         <div className="flex flex-wrap items-center gap-4">
@@ -107,11 +131,17 @@ export function NextStep() {
             </Button>
           ) : null}
         </div>
+        {/* Where the balloon is (the big one floats behind this page). */}
+        <div className="border-t-2 border-ink/20 pt-1">
+          <AltitudeCaption altitude={altitude} waiting={altitude.waiting} />
+        </div>
       </Card>
 
       {others.length > 0 ? (
-        <div className="mt-4 text-sm">
-          <p className="mb-2 font-heading text-xs uppercase opacity-70">Also waiting to go</p>
+        <div className="mt-4 rounded-md border-2 border-ink/15 bg-paper/85 p-3 text-sm backdrop-blur-sm">
+          <p className="mb-2 font-heading text-xs uppercase opacity-70">
+            Also waiting to go
+          </p>
           <ul className="flex flex-wrap gap-2">
             {others.slice(0, 3).map(({ list: other, items }) => (
               <li key={other.id}>
