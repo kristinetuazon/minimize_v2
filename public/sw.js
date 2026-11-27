@@ -5,8 +5,8 @@
  * - Everything else same-origin: serve cached, refresh in the background.
  * All data lives in localStorage / IndexedDB, so nothing here touches it.
  */
-const CACHE = "minimize-v2";
-const PAGES = ["/", "/list", "/sort", "/results", "/lists", "/stats", "/import"];
+const CACHE = "minimize-v3";
+const PAGES = ["/", "/list", "/sort", "/results", "/lists", "/stats", "/about", "/import"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

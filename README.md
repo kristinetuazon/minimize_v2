@@ -21,9 +21,11 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 - **Reminders & progress** – see what's still waiting to go, and lifetime totals of what you've let go
 - **Share & export** – share or copy your results, download a CSV, print, or send an invite link so someone else can sort the same list
 - **Installable** – add it to your home screen; it works offline
-- Everything is saved on your device (lists in localStorage, photos in IndexedDB) – nothing is uploaded
+- Everything is saved on your device (lists in localStorage, photos in IndexedDB) – nothing is uploaded. Minimize asks the browser to protect that storage, and **Journey → Your data** lets you download a backup file (lists, settings and photos) and restore it on another device
 - Playful GSAP animations (a cluttered title that tidies itself, cards dealt onto the table, confetti when you finish) – all switched off when your device asks for reduced motion
 - Night mode: follows your device, or flip it with the moon / sun button (remembered per device)
+
+- **About** – why Minimize exists, how your data is kept, and a link to the maker's portfolio
 
 ## Future Features
 - Accounts and sync across devices

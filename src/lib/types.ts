@@ -56,6 +56,8 @@ export type AppState = {
   /** Completed lists moved out of the way. Kept (without photos) so they can be restored. */
   archived?: Record<string, ArchivedList>;
   autoArchive?: AutoArchive;
+  /** When the last backup file was downloaded. */
+  lastBackupAt?: number;
 };
 
 export type ArchivedList = ListState & { archivedAt: number };

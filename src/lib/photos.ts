@@ -111,3 +111,33 @@ export async function deletePhotos(ids: string[]) {
   }
   ids.forEach((id) => setUrl(id, undefined));
 }
+
+/** Every stored photo, by item id (for backups). */
+export async function exportPhotos(): Promise<Record<string, Blob>> {
+  if (typeof indexedDB === "undefined") return {};
+  const database = await db();
+  return new Promise((resolve, reject) => {
+    const out: Record<string, Blob> = {};
+    const t = database.transaction(STORE, "readonly");
+    const req = t.objectStore(STORE).openCursor();
+    req.onsuccess = () => {
+      const cursor = req.result;
+      if (!cursor) return;
+      out[String(cursor.key)] = cursor.value as Blob;
+      cursor.continue();
+    };
+    t.oncomplete = () => resolve(out);
+    t.onerror = () => reject(t.error ?? new Error("Could not read photos"));
+  });
+}
+
+/** Replaces every stored photo with the given ones (for restoring a backup). */
+export async function replacePhotos(photos: Record<string, Blob>) {
+  await tx("readwrite", (s) => {
+    s.clear();
+    for (const [id, blob] of Object.entries(photos)) s.put(blob, id);
+  });
+  for (const url of urls.values()) if (url) URL.revokeObjectURL(url);
+  urls.clear();
+  emit();
+}

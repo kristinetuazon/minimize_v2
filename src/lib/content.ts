@@ -122,3 +122,10 @@ export function tipsFor(text: string): { label: string | null; tips: string[] } 
   const match = TIP_SETS.find((set) => set.keywords.some((k) => haystack.includes(k)));
   return match ? { label: match.label, tips: match.tips } : { label: null, tips: GENERAL_TIPS };
 }
+
+/** Who made Minimize (shown on the About page). */
+export const AUTHOR = {
+  name: "Kristine",
+  portfolio: "https://www.kristinecodes.dev",
+  source: "https://github.com/kristinetuazon/minimize_v2",
+};

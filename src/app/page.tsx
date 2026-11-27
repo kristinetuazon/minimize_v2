@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 import { HeroTitle } from "@/components/HeroTitle";
 import { HomeSky } from "@/components/HomeSky";
@@ -45,6 +46,12 @@ export default function Home() {
         >
           <NextStep />
           <InstallButton />
+          <Link
+            href="/about"
+            className="text-sm underline underline-offset-4 opacity-75 hover:opacity-100"
+          >
+            About Minimize
+          </Link>
         </div>
       </main>
     </div>
