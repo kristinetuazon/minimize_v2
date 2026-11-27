@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Palette as variables so dark mode is one override. */
+:root {
+  --bg: #f6f0f1;
+  --ink: #2d2d2b;
+  --card: #c39e9e;
+  --paper: #f6f5f0;
+  --sand: #f0e4d8;
+  --keep: #4f7d55;
+  --letgo: #a8463f;
+  --maybe: #a37b12;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1d1a1b;
+    --ink: #f0e4d8;
+    --card: #5e4748;
+    --paper: #2a2526;
+    --sand: #3a3233;
+    --keep: #8fc495;
+    --letgo: #ee9a90;
+    --maybe: #e2c25e;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-card: var(--card);
+  --color-paper: var(--paper);
+  --color-sand: var(--sand);
+  --color-keep: var(--keep);
+  --color-letgo: var(--letgo);
+  --color-maybe: var(--maybe);
+
+  --font-title: var(--font-title-face), serif;
+  --font-heading: var(--font-heading-face), serif;
+  --font-body: var(--font-body-face), serif;
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+  body {
+    @apply bg-bg font-body text-ink antialiased;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ink;
+  }
+  button:not(:disabled),
+  summary {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
