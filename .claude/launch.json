@@ -1,6 +1,12 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3000 }
+    { "name": "dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3000 },
+    {
+      "name": "prod",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "npm run build && npx next start -p 3200"],
+      "port": 3200
+    }
   ]
 }
