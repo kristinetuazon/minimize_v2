@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "./motion";
 import type React from "react";
 
 type ButtonProps = {
@@ -48,22 +49,26 @@ export function Button({
 export function Card({
   children,
   className = "",
+  reveal = false,
 }: {
   children: React.ReactNode;
   className?: string;
+  /** Animate in when it appears (inside a PageShell / Reveal). */
+  reveal?: boolean;
 }) {
   return (
-    <div className={`border-2 border-ink bg-card p-6 sm:p-8 ${className}`}>
+    <div data-reveal={reveal || undefined} className={`border-2 border-ink bg-card p-6 sm:p-8 ${className}`}>
       {children}
     </div>
   );
 }
 
+/** Page layout. Direct children with `data-reveal` animate in (see Reveal). */
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 pt-6 pb-16 sm:px-6">
-      {children}
-    </main>
+    <Reveal className="contents">
+      <main className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 pt-6 pb-16 sm:px-6">{children}</main>
+    </Reveal>
   );
 }
 

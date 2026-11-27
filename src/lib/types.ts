@@ -1,6 +1,8 @@
 export type Item = {
   id: string;
   name: string;
+  /** True when a photo for this item is stored in IndexedDB (keyed by item id). */
+  photo?: boolean;
 };
 
 export type Choice = "keep" | "letgo" | "maybe";
@@ -28,12 +30,23 @@ export type ListState = {
   /** Every decision change, newest last, so undo can step back. */
   history: HistoryEntry[];
   outcomes: Record<string, Outcome>;
+  createdAt: number;
+  updatedAt: number;
 };
 
-/** Everything saved to localStorage. */
+/** Everything saved to localStorage. Photos live in IndexedDB. */
 export type AppState = {
-  version: 2;
-  list: ListState;
-  /** Intro panels the person has already read. Survives "start a new list". */
+  version: 3;
+  lists: Record<string, ListState>;
+  /** The list the List / Sort / Act pages work on, or null for a new one. */
+  currentId: string | null;
+  /** Intro panels the person has already read. */
   seenIntros: string[];
+};
+
+/** What a share link carries: the list itself, never decisions or photos. */
+export type SharedList = {
+  listName: string;
+  description: string;
+  items: string[];
 };

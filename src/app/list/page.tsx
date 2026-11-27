@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Intro } from "@/components/Intro";
+import { animateOut } from "@/components/motion";
+import { gsap, prefersReducedMotion } from "@/lib/gsap";
+import { PhotoControl } from "@/components/Photo";
 import { Stepper } from "@/components/Stepper";
 import { Button, Card, PageShell, inputClasses } from "@/components/ui";
 import { TEMPLATES, splitItems } from "@/lib/content";
@@ -29,7 +32,7 @@ export default function ListPage() {
   return (
     <PageShell>
       <Stepper />
-      <h1 className="font-title text-5xl uppercase">What are we sorting?</h1>
+      <h1 data-reveal className="font-title text-5xl uppercase">What are we sorting?</h1>
 
       <Intro id="list" summary="Why make a list?">
         <p>
@@ -39,7 +42,7 @@ export default function ListPage() {
         <p>Whatever it is, writing it down one item at a time is the first step.</p>
       </Intro>
 
-      <Card className="flex flex-col gap-5">
+      <Card reveal className="flex flex-col gap-5">
         <div>
           <label htmlFor="list-name" className="mb-2 block font-heading">
             Name of list
@@ -91,6 +94,7 @@ export default function ListPage() {
           </form>
           <p className="mt-2 text-sm opacity-75">
             Press Enter to add. Pasting several lines (or a comma-separated list) adds them all.
+            Tap 📷 to add a photo.
           </p>
         </div>
 
@@ -102,7 +106,11 @@ export default function ListPage() {
                 <button
                   key={t.name}
                   type="button"
-                  onClick={() => actions.applyTemplate(t.name, t.items)}
+                  onClick={(e) => {
+                    if (!prefersReducedMotion())
+                      gsap.fromTo(e.currentTarget, { scale: 0.85 }, { scale: 1, duration: 0.4, ease: "back.out(3)" });
+                    actions.applyTemplate(t.name, t.items);
+                  }}
                   className="rounded-full border-2 border-ink/60 bg-paper/60 px-3 py-1.5 text-sm hover:bg-sand"
                 >
                   {t.name}
@@ -120,20 +128,31 @@ export default function ListPage() {
                 type="button"
                 className="text-sm underline underline-offset-4"
                 onClick={() => {
-                  if (window.confirm("Remove all items from this list?")) actions.clearItems();
+                  if (!window.confirm("Remove all items from this list?")) return;
+                  const rows = document.querySelectorAll("#item-list > li");
+                  if (prefersReducedMotion() || rows.length === 0) return actions.clearItems();
+                  gsap.to(rows, {
+                    x: 40,
+                    autoAlpha: 0,
+                    duration: 0.2,
+                    stagger: { each: 0.03, from: "end" },
+                    ease: "power2.in",
+                    onComplete: actions.clearItems,
+                  });
                 }}
               >
                 Clear all
               </button>
             </div>
-            <ul className="max-h-72 divide-y divide-ink/20 overflow-y-auto rounded-md border-2 border-ink bg-bg">
+            <ul id="item-list" className="max-h-72 divide-y divide-ink/20 overflow-y-auto rounded-md border-2 border-ink bg-bg">
               {list.items.map((item) => (
-                <li key={item.id} className="flex items-center justify-between gap-3 px-3 py-2">
-                  <span className="break-words">{item.name}</span>
+                <li key={item.id} data-reveal className="flex items-center gap-3 overflow-hidden px-3 py-2">
+                  <PhotoControl item={item} />
+                  <span className="min-w-0 flex-1 break-words">{item.name}</span>
                   <button
                     type="button"
                     aria-label={`Remove ${item.name}`}
-                    onClick={() => actions.removeItem(item.id)}
+                    onClick={(e) => animateOut(e.currentTarget.closest("li"), () => actions.removeItem(item.id))}
                     className="size-9 shrink-0 rounded-full border-2 border-ink/60 text-xl hover:bg-sand"
                   >
                     −
@@ -145,7 +164,7 @@ export default function ListPage() {
         )}
       </Card>
 
-      <div className="flex justify-end">
+      <div data-reveal className="flex justify-end">
         <Button href="/sort" disabled={count === 0}>
           Start sorting →
         </Button>

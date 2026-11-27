@@ -1,7 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Intro } from "@/components/Intro";
+import { Confetti, CountUp, ProgressBar, pop } from "@/components/motion";
+import { Thumb } from "@/components/Photo";
+import { ShareExport } from "@/components/ShareExport";
 import { Stepper } from "@/components/Stepper";
 import { Button, Card, PageShell } from "@/components/ui";
 import { DESTINATIONS } from "@/lib/content";
@@ -13,10 +17,11 @@ export default function ResultsPage() {
   const { list, hydrated, undecided, keep, letgo, maybe } = useList();
   const handled = letgo.filter((i) => list.outcomes[i.id]?.done).length;
   const sorted = keep.length + letgo.length + maybe.length;
+  // Confetti when the last item is ticked off now, not on every visit.
+  const [justFinished, setJustFinished] = useState(false);
 
-  function startOver() {
-    if (!window.confirm("Clear this list and start a new one?")) return;
-    actions.startOver();
+  function startNew() {
+    actions.newList();
     router.push("/list");
   }
 
@@ -25,17 +30,17 @@ export default function ResultsPage() {
   return (
     <PageShell>
       <Stepper />
-      <h1 className="font-title text-5xl uppercase">Time to act</h1>
+      <h1 data-reveal className="font-title text-5xl uppercase">Time to act</h1>
 
       {sorted > 0 ? (
-        <p className="text-lg leading-relaxed">
+        <p data-reveal className="text-lg leading-relaxed">
           {list.listName ? <><strong>{list.listName}</strong>: you </> : "You "}
-          kept <strong className="text-keep">{keep.length}</strong> and are letting go of{" "}
-          <strong className="text-letgo">{letgo.length}</strong> of {list.items.length} item
+          kept <strong className="text-keep"><CountUp value={keep.length} /></strong> and are letting go of{" "}
+          <strong className="text-letgo"><CountUp value={letgo.length} /></strong> of {list.items.length} item
           {list.items.length === 1 ? "" : "s"}.
         </p>
       ) : (
-        <Card className="text-center">
+        <Card reveal className="text-center">
           <p className="mb-4 text-lg">Nothing sorted yet.</p>
           <Button href={list.items.length ? "/sort" : "/list"}>
             {list.items.length ? "Start sorting" : "Make a list"}
@@ -53,7 +58,7 @@ export default function ResultsPage() {
       </Intro>
 
       {undecided.length > 0 ? (
-        <div className="flex items-center justify-between gap-3 rounded-md border-2 border-dashed border-ink/50 px-4 py-3">
+        <div data-reveal className="flex items-center justify-between gap-3 rounded-md border-2 border-dashed border-ink/50 px-4 py-3 print:hidden">
           <span>
             {undecided.length} item{undecided.length === 1 ? "" : "s"} still to sort.
           </span>
@@ -67,7 +72,10 @@ export default function ResultsPage() {
           <ul className="divide-y divide-ink/20">
             {maybe.map((item) => (
               <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-                <span>{item.name}</span>
+                <span className="flex items-center gap-3">
+                  <Thumb item={item} />
+                  {item.name}
+                </span>
                 <span className="flex gap-2">
                   <SmallButton tone="keep" onClick={() => actions.decide(item.id, "keep")}>Keep</SmallButton>
                   <SmallButton tone="letgo" onClick={() => actions.decide(item.id, "letgo")}>Let go</SmallButton>
@@ -84,30 +92,27 @@ export default function ResultsPage() {
             <div className="mb-1 flex justify-between text-sm">
               <span>Handled</span>
               <span>
-                {handled} / {letgo.length}
+                <CountUp value={handled} /> / {letgo.length}
               </span>
             </div>
-            <div
-              className="h-2.5 overflow-hidden rounded-full bg-ink/15"
-              role="progressbar"
-              aria-label="Let-go items handled"
-              aria-valuemin={0}
-              aria-valuemax={letgo.length}
-              aria-valuenow={handled}
-            >
-              <div
-                className="h-full bg-letgo transition-[width]"
-                style={{ width: `${(handled / letgo.length) * 100}%` }}
-              />
-            </div>
+            <ProgressBar value={handled} max={letgo.length} label="Let-go items handled" />
           </div>
           <ul className="divide-y divide-ink/20">
             {letgo.map((item) => (
-              <LetGoRow key={item.id} item={item} />
+              <LetGoRow
+                key={item.id}
+                item={item}
+                onDone={() => {
+                  if (handled + 1 === letgo.length) setJustFinished(true);
+                }}
+              />
             ))}
           </ul>
           {handled === letgo.length ? (
-            <p className="mt-4 text-center font-heading uppercase">✨ All gone. Nicely done.</p>
+            <p data-reveal className="relative mt-4 text-center font-heading uppercase">
+              {justFinished ? <Confetti /> : null}
+              ✨ All gone. Nicely done.
+            </p>
           ) : null}
         </Section>
       ) : null}
@@ -117,7 +122,10 @@ export default function ResultsPage() {
           <ul className="divide-y divide-ink/20">
             {keep.map((item) => (
               <li key={item.id} className="flex items-center justify-between gap-2 py-2">
-                <span>{item.name}</span>
+                <span className="flex items-center gap-3">
+                  <Thumb item={item} />
+                  {item.name}
+                </span>
                 <SmallButton tone="letgo" onClick={() => actions.decide(item.id, "letgo")}>
                   Let go instead
                 </SmallButton>
@@ -127,15 +135,17 @@ export default function ResultsPage() {
         </Section>
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-4">
+      {sorted > 0 ? <ShareExport list={list} /> : null}
+
+      <div data-reveal className="flex flex-wrap items-center justify-between gap-3 pt-4 print:hidden">
         <Button variant="ghost" href="/list">Edit list</Button>
-        <Button variant="secondary" onClick={startOver}>Start a new list</Button>
+        <Button variant="secondary" onClick={startNew}>New list</Button>
       </div>
     </PageShell>
   );
 }
 
-function LetGoRow({ item }: { item: Item }) {
+function LetGoRow({ item, onDone }: { item: Item; onDone: () => void }) {
   const { list } = useList();
   const outcome = list.outcomes[item.id] ?? {};
   const checkboxId = `done-${item.id}`;
@@ -147,12 +157,22 @@ function LetGoRow({ item }: { item: Item }) {
           id={checkboxId}
           type="checkbox"
           checked={!!outcome.done}
-          onChange={() => actions.toggleDone(item.id)}
+          onChange={(e) => {
+            if (!outcome.done) {
+              pop(e.currentTarget.parentElement);
+              onDone();
+            }
+            actions.toggleDone(item.id);
+          }}
           className="size-5 accent-[var(--letgo)]"
         />
+        <Thumb item={item} />
         <span className={outcome.done ? "line-through opacity-60" : ""}>{item.name}</span>
       </label>
       <span className="flex items-center gap-2 pl-8 sm:pl-0">
+        <span className="hidden text-sm print:inline">
+          {DESTINATIONS.find((d) => d.value === outcome.destination)?.label}
+        </span>
         <select
           aria-label={`Plan for ${item.name}`}
           value={outcome.destination ?? ""}
@@ -188,11 +208,11 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section>
+    <section data-reveal>
       <Card>
         <h2 className={`mb-4 flex items-baseline justify-between font-title text-4xl uppercase`}>
           <span>{title}</span>
-          <span className={`font-heading text-xl ${tone}`}>{count}</span>
+          <CountUp value={count} className={`font-heading text-xl ${tone}`} />
         </h2>
         {children}
       </Card>

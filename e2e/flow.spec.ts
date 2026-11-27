@@ -13,7 +13,7 @@ async function pasteItems(page: Page, text: string) {
 
 test("list → sort → act, with maybe, undo and persistence", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "Start a list" }).click();
+  await page.getByRole("button", { name: "Start a list" }).click();
   await expect(page).toHaveURL(/\/list$/);
 
   // Can't continue with an empty list.

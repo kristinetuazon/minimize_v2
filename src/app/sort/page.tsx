@@ -13,7 +13,7 @@ export default function SortPage() {
   return (
     <PageShell>
       <Stepper />
-      <h1 className="font-title text-5xl uppercase">
+      <h1 data-reveal className="font-title text-5xl uppercase">
         {list.listName ? `Sorting ${list.listName}` : "Keep or let go?"}
       </h1>
 
