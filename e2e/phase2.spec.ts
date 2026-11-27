@@ -92,12 +92,12 @@ test("export CSV and share an invite link that imports", async ({ page, context,
   expect(Buffer.concat(csv).toString()).toBe("Item,Decision,Plan,Done\nStapler,Keep,,\nPens,Let go,Donate,");
 
   await page.getByRole("button", { name: /copy results/i }).click();
-  await expect(page.getByRole("status")).toHaveText(/results copied/i);
+  await expect(page.getByRole("status").filter({ hasText: /results copied/i })).toBeVisible();
   const text = await page.evaluate(() => navigator.clipboard.readText());
   expect(text).toContain("Let go (1)\n• Pens → Donate");
 
   await page.getByRole("button", { name: /invite to sort/i }).click();
-  await expect(page.getByRole("status")).toHaveText(/invite link copied/i);
+  await expect(page.getByRole("status").filter({ hasText: /invite link copied/i })).toBeVisible();
   const link = await page.evaluate(() => navigator.clipboard.readText());
   expect(link).toMatch(/\/import#/);
 

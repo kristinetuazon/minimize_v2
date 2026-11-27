@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { animateOut } from "@/components/motion";
 import { Button, Card, PageShell } from "@/components/ui";
 import { actions, resumeHref, summarize, useLists } from "@/lib/store";
+import { showToast } from "@/lib/toast";
 import type { ListState } from "@/lib/types";
 
 const dateFmt = new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" });
@@ -21,7 +22,12 @@ export default function ListsPage() {
     <PageShell>
       <div data-reveal className="flex items-end justify-between gap-4">
         <h1 className="font-title text-5xl uppercase">Your lists</h1>
-        <Button onClick={startNew}>+ New</Button>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" href="/stats">
+            Progress
+          </Button>
+          <Button onClick={startNew}>+ New</Button>
+        </div>
       </div>
 
       {!hydrated ? null : lists.length === 0 ? (
@@ -83,8 +89,7 @@ function ListRow({ list, current, onOpen }: { list: ListState; current: boolean;
           type="button"
           aria-label={`Delete ${name}`}
           onClick={(e) => {
-            if (!window.confirm(`Delete “${name}”? This can't be undone.`)) return;
-            animateOut(e.currentTarget.closest("li"), () => actions.deleteList(list.id));
+            animateOut(e.currentTarget.closest("li"), () => showToast(`Deleted “${name}”`, actions.deleteList(list.id)));
           }}
           className="size-10 shrink-0 rounded-full border-2 border-ink/50 hover:bg-sand"
         >

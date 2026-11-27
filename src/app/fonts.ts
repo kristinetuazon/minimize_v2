@@ -1,19 +1,24 @@
+import { Josefin_Sans, Poiret_One } from "next/font/google";
 import localFont from "next/font/local";
 
 /*
- * Holipop and Bargemo are licensed for PERSONAL USE ONLY (see their
- * "Read Me !!!.txt" in /Assets). Buy commercial licenses or swap them here
- * before any public or commercial launch. Petrona is OFL and free to use.
+ * All three fonts are free for commercial use under the SIL Open Font License.
+ * (They replace Holipop and Bargemo, which were personal-use only.)
+ *  - Titles: Poiret One. Thin art-deco geometric capitals.
+ *  - Headings: Josefin Sans Light (300). Clean geometric small caps feel.
+ *  - Body: Petrona, bundled in /Assets.
  */
 
-export const titleFont = localFont({
-  src: "../../Assets/Holipop_Title/Holipop.otf",
+export const titleFont = Poiret_One({
+  subsets: ["latin"],
+  weight: "400",
   variable: "--font-title-face",
   display: "swap",
 });
 
-export const headingFont = localFont({
-  src: "../../Assets/Bargemo_Heading/Bargemo-Regular.otf",
+export const headingFont = Josefin_Sans({
+  subsets: ["latin"],
+  weight: "300",
   variable: "--font-heading-face",
   display: "swap",
 });

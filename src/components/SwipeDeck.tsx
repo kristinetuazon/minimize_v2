@@ -13,8 +13,14 @@ import { SwipeCard, type Direction, type SwipeCardHandle } from "./SwipeCard";
 const STACK = 3; // cards visible at once
 
 export function SwipeDeck() {
-  const { list, hydrated, undecided, maybe, canUndo } = useList();
+  const { list, hydrated, undecided, keep, maybe, canUndo } = useList();
   const [reviewingMaybes, setReviewingMaybes] = useState(false);
+  // Keep-only-N: a "narrow down" round over the kept items while over the limit.
+  const [trimming, setTrimming] = useState(false);
+  const [pass, setPass] = useState(0);
+  const [confirmed, setConfirmed] = useState<ReadonlySet<string>>(new Set());
+  const limit = list.keepLimit;
+  const overBy = limit ? Math.max(0, keep.length - limit) : 0;
   const topRef = useRef<SwipeCardHandle>(null);
   // A swipe asked for while the previous card is still flying off.
   const queued = useRef<Direction | null>(null);
@@ -24,9 +30,17 @@ export function SwipeDeck() {
   const deckRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLParagraphElement>(null);
 
-  // Unsorted items always come first; the maybe round starts only when asked.
-  const inMaybeRound = undecided.length === 0 && reviewingMaybes;
-  const deck = undecided.length > 0 ? undecided : inMaybeRound ? maybe : [];
+  // Unsorted items always come first; maybe and narrow-down rounds only when asked.
+  const inMaybeRound = undecided.length === 0 && reviewingMaybes && maybe.length > 0;
+  const inTrimRound = undecided.length === 0 && !inMaybeRound && trimming && overBy > 0;
+  const deck =
+    undecided.length > 0
+      ? undecided
+      : inMaybeRound
+        ? maybe
+        : inTrimRound
+          ? keep.filter((i) => !confirmed.has(i.id))
+          : [];
   const total = list.items.length;
   const top = deck[0];
 
@@ -44,7 +58,7 @@ export function SwipeDeck() {
   const sortedCount = total - undecided.length;
 
   // Deal the visible cards in whenever a round (re)starts.
-  const dealKey = !hydrated || !top ? "none" : inMaybeRound ? "maybe" : "main";
+  const dealKey = !hydrated || !top ? "none" : inMaybeRound ? "maybe" : inTrimRound ? `trim-${pass}` : "main";
   useGSAP(
     () => {
       if (dealKey === "none" || !deckRef.current || prefersReducedMotion()) return;
@@ -104,6 +118,37 @@ export function SwipeDeck() {
     );
   }
 
+  const startTrim = () => {
+    setConfirmed(new Set());
+    setPass((p) => p + 1);
+    setTrimming(true);
+  };
+
+  if (!top && maybe.length === 0 && overBy > 0) {
+    // Over the keep limit: narrow down (again, if a pass didn't get there).
+    const anotherPass = inTrimRound || (trimming && confirmed.size > 0);
+    return (
+      <Card reveal className="relative flex flex-col items-center gap-4 text-center">
+        <h2 className="font-title text-5xl uppercase">{anotherPass ? "Still over" : "Over your limit"}</h2>
+        <p className="text-lg">
+          You&apos;re keeping <strong>{keep.length}</strong> but your limit is <strong>{limit}</strong>. Let
+          go of {overBy} more.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button onClick={startTrim}>{anotherPass ? "Another pass" : "Narrow down"}</Button>
+          <Button href="/results" variant="secondary">
+            See results →
+          </Button>
+        </div>
+        {canUndo ? (
+          <Button variant="ghost" onClick={actions.undo}>
+            Undo last
+          </Button>
+        ) : null}
+      </Card>
+    );
+  }
+
   if (!top) {
     const hasMaybes = maybe.length > 0;
     return (
@@ -133,7 +178,12 @@ export function SwipeDeck() {
   }
 
   const decide = (id: string) => (choice: Choice) => {
-    actions.decide(id, choice);
+    if (inTrimRound && choice === "keep") {
+      // Made the cut this pass.
+      setConfirmed((prev) => new Set(prev).add(id));
+    } else {
+      actions.decide(id, choice);
+    }
     setCelebrate(true);
   };
 
@@ -142,8 +192,15 @@ export function SwipeDeck() {
       <p ref={counterRef} className="font-heading text-sm uppercase" aria-live="polite">
         {inMaybeRound
           ? `Maybes · ${maybe.length} left`
-          : `${Math.min(sortedCount + 1, total)} of ${total}`}
+          : inTrimRound
+            ? `Narrowing down · let go of ${overBy} more`
+            : `${Math.min(sortedCount + 1, total)} of ${total}`}
       </p>
+      {limit ? (
+        <p className={`-mt-3 text-sm ${keep.length > limit ? "text-letgo" : ""}`}>
+          Keeping {keep.length} of {limit} max
+        </p>
+      ) : null}
 
       <div ref={deckRef} className="relative h-[22rem] w-full max-w-md">
         {deck
@@ -167,8 +224,8 @@ export function SwipeDeck() {
                   <SwipeCard
                     ref={isTop ? topRef : undefined}
                     item={item}
-                    question={questionFor(item.id)}
-                    allowMaybe={!inMaybeRound}
+                    question={inTrimRound ? "Does this make the cut?" : questionFor(item.id)}
+                    allowMaybe={!inMaybeRound && !inTrimRound}
                     reducedMotion={reducedMotion}
                     onDecide={decide(item.id)}
                   />
@@ -184,7 +241,7 @@ export function SwipeDeck() {
           label="Maybe"
           hint="↑"
           tone="maybe"
-          disabled={inMaybeRound}
+          disabled={inMaybeRound || inTrimRound}
           onClick={() => swipe("up")}
         />
         <DeckButton label="Keep" hint="→" tone="keep" onClick={() => swipe("right")} />

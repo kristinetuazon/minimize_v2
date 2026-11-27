@@ -4,6 +4,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { deletePhotos } from "./photos";
 import type {
   AppState,
+  ArchivedStats,
   Choice,
   Destination,
   Item,
@@ -72,7 +73,7 @@ function parse(raw: string | null): AppState | null {
         if (l && Array.isArray(l.items)) lists[id] = { ...makeList(id, now), ...l, id };
       }
       const currentId = data.currentId && lists[data.currentId] ? data.currentId : null;
-      return { version: 3, lists, currentId, seenIntros: data.seenIntros ?? [] };
+      return { version: 3, lists, currentId, seenIntros: data.seenIntros ?? [], archive: data.archive };
     }
 
     if (data.version === 2 && data.list && Array.isArray(data.list.items)) {
@@ -139,6 +140,33 @@ const updateList = (fn: (l: ListState) => ListState) =>
     return { ...s, currentId: list.id, lists: { ...s.lists, [list.id]: list } };
   });
 
+/** Applies a change to a specific list (used by undo, which may run after switching lists). */
+const updateListById = (id: string, fn: (l: ListState) => ListState) =>
+  update((s) => {
+    const list = s.lists[id];
+    if (!list) return s;
+    return { ...s, lists: { ...s.lists, [id]: { ...fn(list), updatedAt: Date.now() } } };
+  });
+
+function addToArchive(archive: ArchivedStats | undefined, list: ListState): ArchivedStats {
+  const a = archive ?? { lists: 0, kept: 0, letgo: 0, gone: 0, byDestination: {} };
+  const { keep, letgo, handled, undecided, maybe } = summarize(list);
+  const wasFinished = list.items.length > 0 && undecided.length === 0 && maybe.length === 0;
+  const byDestination = { ...a.byDestination };
+  for (const item of letgo) {
+    const o = list.outcomes[item.id];
+    if (o?.done && o.destination) byDestination[o.destination] = (byDestination[o.destination] ?? 0) + 1;
+  }
+  return {
+    lists: a.lists + 1,
+    finished: (a.finished ?? 0) + (wasFinished ? 1 : 0),
+    kept: a.kept + keep.length,
+    letgo: a.letgo + letgo.length,
+    gone: a.gone + handled,
+    byDestination,
+  };
+}
+
 /** Leaving a list that was never filled in removes it, so it doesn't clutter the lists page. */
 function leaveCurrent(s: AppState): AppState {
   const current = s.currentId ? s.lists[s.currentId] : undefined;
@@ -182,15 +210,32 @@ export const actions = {
   openList: (id: string) =>
     update((s) => (s.lists[id] ? { ...leaveCurrent(s), currentId: id } : s)),
 
+  /**
+   * Removes a list. Returns `undo` (puts it back) and `commit` (deletes its
+   * photos and folds its totals into lifetime stats), for an undo toast.
+   */
   deleteList: (id: string) => {
+    load();
     const list = state.lists[id];
-    if (!list) return;
-    void deletePhotos(list.items.filter((i) => i.photo).map((i) => i.id));
+    if (!list) return null;
+    const wasCurrent = state.currentId === id;
     update((s) => {
       const lists = { ...s.lists };
       delete lists[id];
       return { ...s, lists, currentId: s.currentId === id ? null : s.currentId };
     });
+    return {
+      undo: () =>
+        update((s) => ({
+          ...s,
+          lists: { ...s.lists, [id]: list },
+          currentId: wasCurrent ? id : s.currentId,
+        })),
+      commit: () => {
+        void deletePhotos(list.items.filter((i) => i.photo).map((i) => i.id));
+        update((s) => ({ ...s, archive: addToArchive(s.archive, list) }));
+      },
+    };
   },
 
   /** Adds a shared list as a new list and makes it current. Returns its id. */
@@ -210,13 +255,13 @@ export const actions = {
   setListName: (listName: string) => updateList((l) => ({ ...l, listName })),
   setDescription: (description: string) => updateList((l) => ({ ...l, description })),
 
-  addItems: (names: string[]) => {
+  /** Adds items to the current list and returns their ids. */
+  addItems: (names: string[], opts: { photo?: boolean } = {}): string[] => {
     const clean = names.map((n) => n.trim()).filter(Boolean);
-    if (clean.length === 0) return;
-    updateList((l) => ({
-      ...l,
-      items: [...l.items, ...clean.map((name) => ({ id: newId(), name }))],
-    }));
+    if (clean.length === 0) return [];
+    const added = clean.map((name) => ({ id: newId(), name, ...(opts.photo ? { photo: true } : {}) }));
+    updateList((l) => ({ ...l, items: [...l.items, ...added] }));
+    return added.map((i) => i.id);
   },
 
   /** Adds a template's items, skipping ones already on the list. */
@@ -231,8 +276,16 @@ export const actions = {
       };
     }),
 
+  /** Removes an item. Returns `undo` / `commit` for an undo toast. */
   removeItem: (id: string) => {
-    void deletePhotos([id]);
+    load();
+    const listId = state.currentId;
+    const before = listId ? state.lists[listId] : undefined;
+    const index = before?.items.findIndex((i) => i.id === id) ?? -1;
+    if (!before || index < 0) return null;
+    const item = before.items[index]!;
+    const decision = before.decisions[id];
+    const outcome = before.outcomes[id];
     updateList((l) => {
       const decisions = { ...l.decisions };
       const outcomes = { ...l.outcomes };
@@ -246,13 +299,68 @@ export const actions = {
         history: l.history.filter((h) => h.id !== id),
       };
     });
+    return {
+      undo: () =>
+        updateListById(before.id, (l) => {
+          const items = [...l.items];
+          items.splice(Math.min(index, items.length), 0, item);
+          return {
+            ...l,
+            items,
+            decisions: decision ? { ...l.decisions, [id]: decision } : l.decisions,
+            outcomes: outcome ? { ...l.outcomes, [id]: outcome } : l.outcomes,
+          };
+        }),
+      commit: () => {
+        if (item.photo) void deletePhotos([id]);
+      },
+    };
   },
 
+  /** Empties the current list. Returns `undo` / `commit` for an undo toast. */
   clearItems: () => {
+    load();
     const current = state.currentId ? state.lists[state.currentId] : undefined;
-    if (current) void deletePhotos(current.items.filter((i) => i.photo).map((i) => i.id));
+    if (!current || current.items.length === 0) return null;
+    const snapshot = current;
     updateList((l) => ({ ...l, items: [], decisions: {}, history: [], outcomes: {} }));
+    return {
+      undo: () =>
+        updateListById(snapshot.id, (l) => ({
+          ...l,
+          // Keep anything added since, after the restored items.
+          items: [...snapshot.items, ...l.items],
+          decisions: { ...snapshot.decisions, ...l.decisions },
+          history: snapshot.history,
+          outcomes: { ...snapshot.outcomes, ...l.outcomes },
+        })),
+      commit: () => void deletePhotos(snapshot.items.filter((i) => i.photo).map((i) => i.id)),
+    };
   },
+
+  renameItem: (id: string, name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    updateList((l) => ({
+      ...l,
+      items: l.items.map((i) => (i.id === id && i.name !== trimmed ? { ...i, name: trimmed } : i)),
+    }));
+  },
+
+  /** Keep-only-N: a whole number above zero, or undefined to turn it off. */
+  setKeepLimit: (limit: number | undefined) =>
+    updateList((l) => ({
+      ...l,
+      keepLimit: limit && Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : undefined,
+    })),
+
+  setChecklist: (checklist: boolean) => updateList((l) => ({ ...l, checklist: checklist || undefined })),
+
+  togglePacked: (id: string) =>
+    updateList((l) => ({
+      ...l,
+      outcomes: { ...l.outcomes, [id]: { ...l.outcomes[id], packed: !l.outcomes[id]?.packed } },
+    })),
 
   /** Records whether an item has a stored photo (the image itself is in IndexedDB). */
   setItemPhoto: (id: string, photo: boolean) =>
@@ -364,4 +472,51 @@ export function useLists() {
     }),
     [lists, currentId, hydrated]
   );
+}
+
+/** Lifetime totals: every saved list plus lists that were deleted. */
+export function useStats() {
+  const { lists, archive } = useAppState();
+  const hydrated = useHydrated();
+
+  return useMemo(() => {
+    const saved = Object.values(lists).filter((l) => !isBlank(l));
+    const byDestination: Partial<Record<Destination, number>> = { ...archive?.byDestination };
+    let kept = archive?.kept ?? 0;
+    let letgo = archive?.letgo ?? 0;
+    let gone = archive?.gone ?? 0;
+    let sorted = (archive?.kept ?? 0) + (archive?.letgo ?? 0);
+    let finished = archive?.finished ?? 0;
+    /** Let-go items not handled yet, per list, for reminders. */
+    const waiting: { list: ListState; items: Item[] }[] = [];
+
+    for (const list of saved) {
+      const s = summarize(list);
+      kept += s.keep.length;
+      letgo += s.letgo.length;
+      gone += s.handled;
+      sorted += s.keep.length + s.letgo.length + s.maybe.length;
+      if (list.items.length > 0 && s.undecided.length === 0 && s.maybe.length === 0) finished += 1;
+      for (const item of s.letgo) {
+        const o = list.outcomes[item.id];
+        if (o?.done && o.destination) byDestination[o.destination] = (byDestination[o.destination] ?? 0) + 1;
+      }
+      const pending = s.letgo.filter((i) => !list.outcomes[i.id]?.done);
+      if (pending.length > 0) waiting.push({ list, items: pending });
+    }
+    waiting.sort((a, b) => b.items.length - a.items.length);
+
+    return {
+      hydrated,
+      lists: saved.length + (archive?.lists ?? 0),
+      finished,
+      sorted,
+      kept,
+      letgo,
+      gone,
+      byDestination,
+      waiting,
+      waitingCount: waiting.reduce((n, w) => n + w.items.length, 0),
+    };
+  }, [lists, archive, hydrated]);
 }

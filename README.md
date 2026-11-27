@@ -12,7 +12,12 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 - **Sort** – swipe cards right to keep, left to let go, up for maybe (or use the buttons / ← ↑ → keys), with undo and a second round for maybes
 - **Act** – pick a plan for each let-go item (donate, sell, give, recycle, throw away), tick it off, and track progress
 - **Multiple lists** – keep as many lists as you like and pick any back up where you left off
-- **Photos** – snap or pick a photo for any item; it shows on the swipe card and in your results
+- **Camera** – snap items one after another with the in-app camera; name them now or later
+- **Photos** – add a photo to any item; it shows on the swipe card and in your results
+- **Rename anything** – tap an item's name to fix it; deletes can be undone from the toast
+- **Keep-only-N** – set a limit ("only 10 fit in the suitcase") and narrow down until you're under it
+- **Packing checklist** – tick off kept items as they go in the bag or back on the shelf
+- **Reminders & progress** – see what's still waiting to go, and lifetime totals of what you've let go
 - **Share & export** – share or copy your results, download a CSV, print, or send an invite link so someone else can sort the same list
 - **Installable** – add it to your home screen; it works offline
 - Everything is saved on your device (lists in localStorage, photos in IndexedDB) – nothing is uploaded
@@ -22,7 +27,6 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 ## Future Features
 - Accounts and sync across devices
 - AI help: turn one photo of a shelf into a list
-- Keep-only-N and packing-checklist modes
 
 ## Tech Stack
 
@@ -33,7 +37,7 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 - [Playwright](https://playwright.dev) for end-to-end tests
 
 ## Fonts
-Petrona is licensed under the SIL Open Font License. **Holipop and Bargemo are free for personal use only** – buy commercial licenses (links in `Assets/*/Read Me !!!.txt`) or swap them in `src/app/fonts.ts` before any commercial launch.
+All fonts are free for commercial use under the SIL Open Font License: [Poiret One](https://fonts.google.com/specimen/Poiret+One) (titles), [Josefin Sans](https://fonts.google.com/specimen/Josefin+Sans) Light (headings) and Petrona (body). They're set up in `src/app/fonts.ts`.
 
 # Getting Started
 ## Prerequisites

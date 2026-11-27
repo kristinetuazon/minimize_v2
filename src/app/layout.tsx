@@ -3,6 +3,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Toaster } from "@/components/Toaster";
 import { THEME_SCRIPT } from "@/lib/theme";
 import { bodyFont, headingFont, titleFont } from "./fonts";
 import "./globals.css";
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         {children}
+        <Toaster />
         <ServiceWorker />
       </body>
     </html>

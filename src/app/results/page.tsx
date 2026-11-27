@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { EditableName } from "@/components/EditableName";
 import { Intro } from "@/components/Intro";
 import { Confetti, CountUp, ProgressBar, pop } from "@/components/motion";
 import { Thumb } from "@/components/Photo";
@@ -66,15 +67,29 @@ export default function ResultsPage() {
         </div>
       ) : null}
 
+      {list.keepLimit && keep.length > list.keepLimit ? (
+        <div
+          data-reveal
+          className="flex items-center justify-between gap-3 rounded-md border-2 border-letgo px-4 py-3 print:hidden"
+        >
+          <span>
+            You&apos;re keeping {keep.length}, {keep.length - list.keepLimit} over your limit of {list.keepLimit}.
+          </span>
+          <Button href="/sort" variant="secondary">
+            Narrow down
+          </Button>
+        </div>
+      ) : null}
+
       {maybe.length > 0 ? (
         <Section title="Maybe" count={maybe.length} tone="text-maybe">
           <p className="mb-3 text-sm">Make the call here, or go back for a second swipe.</p>
           <ul className="divide-y divide-ink/20">
             {maybe.map((item) => (
               <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-                <span className="flex items-center gap-3">
+                <span className="flex min-w-0 items-center gap-3">
                   <Thumb item={item} />
-                  {item.name}
+                  <EditableName item={item} />
                 </span>
                 <span className="flex gap-2">
                   <SmallButton tone="keep" onClick={() => actions.decide(item.id, "keep")}>Keep</SmallButton>
@@ -117,23 +132,7 @@ export default function ResultsPage() {
         </Section>
       ) : null}
 
-      {keep.length > 0 ? (
-        <Section title="Keep" count={keep.length} tone="text-keep">
-          <ul className="divide-y divide-ink/20">
-            {keep.map((item) => (
-              <li key={item.id} className="flex items-center justify-between gap-2 py-2">
-                <span className="flex items-center gap-3">
-                  <Thumb item={item} />
-                  {item.name}
-                </span>
-                <SmallButton tone="letgo" onClick={() => actions.decide(item.id, "letgo")}>
-                  Let go instead
-                </SmallButton>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      ) : null}
+      {keep.length > 0 ? <KeepSection keep={keep} /> : null}
 
       {sorted > 0 ? <ShareExport list={list} /> : null}
 
@@ -145,6 +144,82 @@ export default function ResultsPage() {
   );
 }
 
+/** Kept items; optionally a packing checklist ("packed" / "put away"). */
+function KeepSection({ keep }: { keep: Item[] }) {
+  const { list } = useList();
+  const checklist = !!list.checklist;
+  const packed = keep.filter((i) => list.outcomes[i.id]?.packed).length;
+  const [allPacked, setAllPacked] = useState(false);
+
+  return (
+    <Section title="Keep" count={keep.length} tone="text-keep">
+      <label className="mb-4 flex cursor-pointer items-center justify-between gap-3 print:hidden">
+        <span>
+          <span className="font-heading text-sm uppercase">Use as a checklist</span>
+          <span className="block text-sm opacity-75">Tick things off as they go in the bag or back on the shelf.</span>
+        </span>
+        <input
+          type="checkbox"
+          role="switch"
+          checked={checklist}
+          onChange={(e) => actions.setChecklist(e.target.checked)}
+          className="size-5 shrink-0 accent-[var(--keep)]"
+        />
+      </label>
+
+      {checklist ? (
+        <div className="mb-4">
+          <div className="mb-1 flex justify-between text-sm">
+            <span>Packed</span>
+            <span>
+              <CountUp value={packed} /> / {keep.length}
+            </span>
+          </div>
+          <ProgressBar value={packed} max={keep.length} label="Kept items packed" tone="keep" />
+        </div>
+      ) : null}
+
+      <ul className="divide-y divide-ink/20">
+        {keep.map((item) => {
+          const isPacked = !!list.outcomes[item.id]?.packed;
+          return (
+            <li key={item.id} className="flex items-center justify-between gap-2 py-2">
+              <span className="flex min-w-0 items-center gap-3">
+                {checklist ? (
+                  <input
+                    type="checkbox"
+                    aria-label={`Mark ${item.name} as packed`}
+                    checked={isPacked}
+                    onChange={(e) => {
+                      if (!isPacked) {
+                        pop(e.currentTarget.parentElement);
+                        if (packed + 1 === keep.length) setAllPacked(true);
+                      }
+                      actions.togglePacked(item.id);
+                    }}
+                    className="size-5 shrink-0 accent-[var(--keep)]"
+                  />
+                ) : null}
+                <Thumb item={item} />
+                <EditableName item={item} className={checklist && isPacked ? "line-through opacity-60" : ""} />
+              </span>
+              <SmallButton tone="letgo" onClick={() => actions.decide(item.id, "letgo")}>
+                Let go instead
+              </SmallButton>
+            </li>
+          );
+        })}
+      </ul>
+      {checklist && packed === keep.length ? (
+        <p data-reveal className="relative mt-4 text-center font-heading uppercase">
+          {allPacked ? <Confetti /> : null}
+          🧳 All packed.
+        </p>
+      ) : null}
+    </Section>
+  );
+}
+
 function LetGoRow({ item, onDone }: { item: Item; onDone: () => void }) {
   const { list } = useList();
   const outcome = list.outcomes[item.id] ?? {};
@@ -152,10 +227,11 @@ function LetGoRow({ item, onDone }: { item: Item; onDone: () => void }) {
 
   return (
     <li className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
-      <label htmlFor={checkboxId} className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         <input
           id={checkboxId}
           type="checkbox"
+          aria-label={`Mark ${item.name} as gone`}
           checked={!!outcome.done}
           onChange={(e) => {
             if (!outcome.done) {
@@ -167,8 +243,8 @@ function LetGoRow({ item, onDone }: { item: Item; onDone: () => void }) {
           className="size-5 accent-[var(--letgo)]"
         />
         <Thumb item={item} />
-        <span className={outcome.done ? "line-through opacity-60" : ""}>{item.name}</span>
-      </label>
+        <EditableName item={item} className={outcome.done ? "line-through opacity-60" : ""} />
+      </div>
       <span className="flex items-center gap-2 pl-8 sm:pl-0">
         <span className="hidden text-sm print:inline">
           {DESTINATIONS.find((d) => d.value === outcome.destination)?.label}
