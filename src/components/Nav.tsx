@@ -20,7 +20,12 @@ const TABS: Tab[] = [
     // The List / Sort / Act steps all belong to a list.
     match: (p) => ["/lists", "/list", "/sort", "/results", "/import"].includes(p),
   },
-  { href: "/stats", label: "Progress", icon: icon("M4 20V10M10 20V4M16 20v-7M22 20H2"), match: (p) => p === "/stats" },
+  {
+    href: "/stats",
+    label: "Journey",
+    icon: icon("M12 2.5c4 0 6.5 3 6.5 6.8 0 3.2-2.6 5.7-4.3 7.4h-4.4c-1.7-1.7-4.3-4.2-4.3-7.4C5.5 5.5 8 2.5 12 2.5zM10 16.7l.6 3M14 16.7l-.6 3M10.2 19.7h3.6v2.3h-3.6z"),
+    match: (p) => p === "/stats",
+  },
 ];
 
 /** Desktop: text links in the header. */

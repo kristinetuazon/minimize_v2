@@ -15,6 +15,7 @@
   --letgo: #a8463f;
   --maybe: #a37b12;
   --glow: transparent;
+  --stars: 0;
   color-scheme: light;
 }
 
@@ -29,6 +30,7 @@
     --letgo: #ee9a90;
     --maybe: #e2c25e;
     --glow: rgb(195 158 158 / 0.12);
+    --stars: 0.8;
     color-scheme: dark;
   }
 }
@@ -43,6 +45,7 @@
   --letgo: #ee9a90;
   --maybe: #e2c25e;
   --glow: rgb(195 158 158 / 0.12);
+  --stars: 0.8;
   color-scheme: dark;
 }
 
@@ -62,6 +65,11 @@
 }
 
 @layer base {
+  html,
+  body {
+    /* Full-bleed bands (like the step timeline) use 100vw; don't let the scrollbar width cause sideways scroll. */
+    overflow-x: clip;
+  }
   body {
     @apply bg-bg font-body text-ink antialiased;
     /* A soft moonlit glow at the top of the page at night. */
@@ -102,6 +110,11 @@
   to {
     visibility: visible;
   }
+}
+
+/* Big backdrops (home sky): keep line weights fine however much the SVG is scaled. */
+.sky-art * {
+  vector-effect: non-scaling-stroke;
 }
 
 /* Night ⇄ day switch: a circle that grows from the toggle (View Transitions). */

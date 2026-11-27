@@ -91,7 +91,7 @@ export function PageShell({ children, wide = false }: { children: React.ReactNod
   return (
     <Reveal className="contents">
       <main
-        className={`mx-auto flex w-full max-w-xl flex-col gap-6 px-4 pt-6 pb-16 sm:px-6 ${wide ? "lg:max-w-6xl" : ""}`}
+        className={`mx-auto flex w-full max-w-xl flex-col gap-6 px-4 pt-6 pb-16 sm:px-6 ${wide ? "lg:max-w-[min(100rem,100%)] lg:px-10 xl:px-16" : ""}`}
       >
         {children}
       </main>

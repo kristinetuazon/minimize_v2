@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CameraCapture } from "@/components/CameraCapture";
 import { EditableName } from "@/components/EditableName";
+import { LaunchPad } from "@/components/LaunchPad";
 import { Intro } from "@/components/Intro";
 import { animateOut } from "@/components/motion";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
@@ -107,11 +108,12 @@ export default function ListPage() {
                 }
               />
               <span className="text-sm opacity-75">
-                e.g. “only 10 things fit in the suitcase”. You&apos;ll narrow
-                down if you keep more.
+                How much room is in the basket? e.g. “only 10 things fit in the
+                suitcase”. You&apos;ll narrow down if you keep more.
               </span>
             </div>
           </div>
+          <LaunchPad items={list.items} limit={list.keepLimit} />
         </div>
 
         {/* Desktop: the items sit in their own column beside the details. */}
@@ -155,7 +157,7 @@ export default function ListPage() {
           {count === 0 ? (
             <div>
               <p className="mb-2 font-heading text-sm uppercase">
-                Or start from a template
+                Or load a ready-made basket
               </p>
               <div className="flex flex-wrap gap-2">
                 {TEMPLATES.map((t) => (
@@ -257,7 +259,7 @@ export default function ListPage() {
           disabled={count === 0}
           className="w-full sm:w-auto"
         >
-          Start sorting →
+          Lift off: start sorting →
         </Button>
       </div>
     </PageShell>

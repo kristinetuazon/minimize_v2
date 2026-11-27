@@ -1,17 +1,16 @@
 "use client";
 
-import { QUESTIONS, questionIndex, tipsFor } from "@/lib/content";
+import { tipsFor } from "@/lib/content";
 import { useList } from "@/lib/store";
+import { AltitudeMeter } from "./Balloon";
 
 /**
- * Everything that helps while sorting: the controls, the question for the
- * card on top (highlighted), tips matched to what's being sorted, and a
- * running tally. Shared by the desktop side panel and the phone drawer.
+ * Everything that helps while sorting: the controls, tips matched to what's
+ * being sorted, your balloon and a running tally. (Each card already shows
+ * its guiding question, so they aren't repeated here.) Shared by the desktop side panel and the phone drawer.
  */
 export function SortGuide({ showTally = true }: { showTally?: boolean }) {
-  const { list, undecided, keep, letgo, maybe } = useList();
-  const current = undecided[0] ?? maybe[0];
-  const activeQuestion = current ? questionIndex(list.items.map((i) => i.id), current.id) : -1;
+  const { list, keep, letgo, maybe } = useList();
   const { label, tips } = tipsFor(`${list.listName} ${list.description}`);
 
   return (
@@ -28,30 +27,6 @@ export function SortGuide({ showTally = true }: { showTally?: boolean }) {
         </ul>
       </section>
 
-      <section aria-labelledby="guide-questions">
-        <h3 id="guide-questions" className="mb-2 font-heading text-sm uppercase">
-          Ask yourself
-        </h3>
-        <ul className="grid gap-1">
-          {QUESTIONS.map((q, i) => {
-            const active = i === activeQuestion;
-            return (
-              <li
-                key={q}
-                aria-current={active ? "true" : undefined}
-                className={`rounded px-2 py-1 transition-colors duration-300 ${
-                  active ? "bg-card font-medium" : "opacity-75"
-                }`}
-              >
-                {q}
-                {active ? (
-                  <span className="ml-2 font-heading text-[0.65rem] uppercase opacity-70">on this card</span>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
-      </section>
 
       <section aria-labelledby="guide-tips">
         <h3 id="guide-tips" className="mb-2 font-heading text-sm uppercase">
@@ -71,6 +46,15 @@ export function SortGuide({ showTally = true }: { showTally?: boolean }) {
           </p>
         ) : null}
       </section>
+
+      {showTally ? (
+        <section aria-labelledby="guide-altitude">
+          <h3 id="guide-altitude" className="mb-1 font-heading text-sm uppercase">
+            Your balloon
+          </h3>
+          <AltitudeMeter />
+        </section>
+      ) : null}
 
       {showTally && keep.length + letgo.length + maybe.length > 0 ? (
         <section aria-labelledby="guide-tally">

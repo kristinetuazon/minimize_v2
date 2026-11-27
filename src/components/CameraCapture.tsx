@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 import { savePhoto } from "@/lib/photos";
-import { actions, useList } from "@/lib/store";
+import { actions, reportStorageFull, useList } from "@/lib/store";
 
 type CameraState = "starting" | "live" | "denied" | "unavailable";
 
@@ -80,8 +80,9 @@ export function CameraCapture({ onClose }: { onClose: () => void }) {
       if (!id) return;
       try {
         await savePhoto(id, blob);
-      } catch {
+      } catch (e) {
         actions.setItemPhoto(id, false);
+        if ((e as DOMException)?.name === "QuotaExceededError") reportStorageFull(true);
       }
       setSnapped((prev) => [{ id, url: URL.createObjectURL(blob), name: itemName }, ...prev]);
       setName("");

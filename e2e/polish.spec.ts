@@ -48,7 +48,7 @@ test("removing an item or a list can be undone from the toast", async ({ page })
   await expect(page.getByRole("status").filter({ hasText: "Removed “Vase”" })).toBeVisible();
   await expect(page.getByText("1 item", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Undo" }).click();
-  await expect(page.getByText("2 items")).toBeVisible();
+  await expect(page.getByText("2 items", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Rename Vase" })).toBeVisible();
 
   await page.goto("/lists");
@@ -61,7 +61,8 @@ test("removing an item or a list can be undone from the toast", async ({ page })
 
 test("a swipe still in flight is saved when you jump to results", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === "reduced-motion", "No fly-out animation to interrupt with reduced motion");
-  await makeList(page, "Bag", ["Hat", "Scarf"]);
+  // Three items, so the "See results so far" link is still there after Scarf lands.
+  await makeList(page, "Bag", ["Hat", "Scarf", "Gloves"]);
   await page.getByRole("link", { name: /start sorting/i }).click();
   await sortAll(page, ["keep"]);
   // Let go of Scarf and immediately leave, before the card finishes flying.

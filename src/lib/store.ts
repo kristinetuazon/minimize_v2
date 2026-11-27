@@ -4,11 +4,14 @@ import { useMemo, useSyncExternalStore } from "react";
 import { deletePhotos } from "./photos";
 import type {
   AppState,
+  ArchivedList,
   ArchivedStats,
+  AutoArchive,
   Choice,
   Destination,
   Item,
   ListState,
+  Postcard,
   SharedList,
 } from "./types";
 
@@ -73,7 +76,16 @@ function parse(raw: string | null): AppState | null {
         if (l && Array.isArray(l.items)) lists[id] = { ...makeList(id, now), ...l, id };
       }
       const currentId = data.currentId && lists[data.currentId] ? data.currentId : null;
-      return { version: 3, lists, currentId, seenIntros: data.seenIntros ?? [], archive: data.archive };
+      return {
+        version: 3,
+        lists,
+        currentId,
+        seenIntros: data.seenIntros ?? [],
+        archive: data.archive,
+        seenAltitude: data.seenAltitude,
+        archived: data.archived,
+        autoArchive: data.autoArchive,
+      };
     }
 
     if (data.version === 2 && data.list && Array.isArray(data.list.items)) {
@@ -114,6 +126,25 @@ function emit() {
   for (const l of listeners) l();
 }
 
+/** True once a save has failed (storage full or blocked). */
+let storageFull = false;
+const storageListeners = new Set<() => void>();
+export function reportStorageFull(full: boolean) {
+  if (storageFull === full) return;
+  storageFull = full;
+  storageListeners.forEach((l) => l());
+}
+export function useStorageFull() {
+  return useSyncExternalStore(
+    (cb) => {
+      storageListeners.add(cb);
+      return () => storageListeners.delete(cb);
+    },
+    () => storageFull,
+    () => false
+  );
+}
+
 function update(fn: (s: AppState) => AppState) {
   load();
   const next = fn(state);
@@ -121,8 +152,10 @@ function update(fn: (s: AppState) => AppState) {
   state = next;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    reportStorageFull(false);
   } catch {
-    // Storage full or blocked: the app still works for this visit.
+    // Storage full or blocked: the app still works for this visit, and we say so.
+    reportStorageFull(true);
   }
   emit();
 }
@@ -148,6 +181,33 @@ const updateListById = (id: string, fn: (l: ListState) => ListState) =>
     return { ...s, lists: { ...s.lists, [id]: { ...fn(list), updatedAt: Date.now() } } };
   });
 
+/** How many balloons the Your lists sky shows; "full" auto-archive keeps to this. */
+export const FLEET_MAX = 8;
+
+function moveToArchive(s: AppState, ids: string[]): AppState {
+  const lists = { ...s.lists };
+  const archived: Record<string, ArchivedList> = { ...s.archived };
+  const now = Date.now();
+  for (const id of ids) {
+    const list = lists[id];
+    if (!list) continue;
+    delete lists[id];
+    // Photos are removed to free space; history isn't needed any more.
+    archived[id] = {
+      ...list,
+      items: list.items.map(({ photo: _photo, ...item }) => (void _photo, item)),
+      history: [],
+      archivedAt: now,
+    };
+  }
+  return { ...s, lists, archived, currentId: s.currentId && ids.includes(s.currentId) ? null : s.currentId };
+}
+
+function postcardFor(list: ListState): Postcard {
+  const { keep, letgo } = summarize(list);
+  return { id: list.id, name: list.listName || "Untitled list", letgo: letgo.length, kept: keep.length, date: list.updatedAt };
+}
+
 function addToArchive(archive: ArchivedStats | undefined, list: ListState): ArchivedStats {
   const a = archive ?? { lists: 0, kept: 0, letgo: 0, gone: 0, byDestination: {} };
   const { keep, letgo, handled, undecided, maybe } = summarize(list);
@@ -160,6 +220,7 @@ function addToArchive(archive: ArchivedStats | undefined, list: ListState): Arch
   return {
     lists: a.lists + 1,
     finished: (a.finished ?? 0) + (wasFinished ? 1 : 0),
+    postcards: wasFinished ? [...(a.postcards ?? []), postcardFor(list)] : a.postcards,
     kept: a.kept + keep.length,
     letgo: a.letgo + letgo.length,
     gone: a.gone + handled,
@@ -214,6 +275,79 @@ export const actions = {
    * Removes a list. Returns `undo` (puts it back) and `commit` (deletes its
    * photos and folds its totals into lifetime stats), for an undo toast.
    */
+  /** Moves a list to the archive (photos are deleted on commit). Returns undo/commit for a toast. */
+  archiveList: (id: string) => {
+    load();
+    const list = state.lists[id];
+    if (!list) return null;
+    const wasCurrent = state.currentId === id;
+    update((s) => moveToArchive(s, [id]));
+    return {
+      undo: () =>
+        update((s) => {
+          const archived = { ...s.archived };
+          delete archived[id];
+          return { ...s, archived, lists: { ...s.lists, [id]: list }, currentId: wasCurrent ? id : s.currentId };
+        }),
+      commit: () => void deletePhotos(list.items.filter((i) => i.photo).map((i) => i.id)),
+    };
+  },
+
+  /** Archives every completed list at once (e.g. to free space). Returns how many. */
+  archiveCompleted: () => {
+    load();
+    const ids = Object.values(state.lists).filter(isComplete).map((l) => l.id);
+    if (ids.length === 0) return 0;
+    const photos = ids.flatMap((id) => state.lists[id]!.items.filter((i) => i.photo).map((i) => i.id));
+    update((s) => moveToArchive(s, ids));
+    void deletePhotos(photos);
+    return ids.length;
+  },
+
+  restoreList: (id: string) =>
+    update((s) => {
+      const entry = s.archived?.[id];
+      if (!entry) return s;
+      const archived = { ...s.archived };
+      delete archived[id];
+      const { archivedAt: _archivedAt, ...list } = entry;
+      void _archivedAt;
+      return { ...s, archived, lists: { ...s.lists, [id]: { ...list, updatedAt: Date.now() } } };
+    }),
+
+  /** Deletes an archived list for good; its totals and postcard stay in lifetime stats. */
+  deleteArchived: (id: string) =>
+    update((s) => {
+      const entry = s.archived?.[id];
+      if (!entry) return s;
+      const archived = { ...s.archived };
+      delete archived[id];
+      return { ...s, archived, archive: addToArchive(s.archive, entry) };
+    }),
+
+  setAutoArchive: (autoArchive: AutoArchive) => update((s) => ({ ...s, autoArchive })),
+
+  /** Applies the auto-archive setting. Photos of archived lists are deleted. */
+  runAutoArchive: () => {
+    load();
+    const mode = state.autoArchive ?? "off";
+    if (mode === "off") return;
+    const active = Object.values(state.lists).filter((l) => !isBlank(l));
+    const done = active.filter(isComplete).sort((a, b) => a.updatedAt - b.updatedAt);
+    let ids: string[] = [];
+    if (mode === "30d") {
+      const cutoff = Date.now() - 30 * 86_400_000;
+      ids = done.filter((l) => l.updatedAt < cutoff).map((l) => l.id);
+    } else {
+      const over = active.length - FLEET_MAX;
+      ids = over > 0 ? done.slice(0, over).map((l) => l.id) : [];
+    }
+    if (ids.length === 0) return;
+    const photos = ids.flatMap((id) => state.lists[id]!.items.filter((i) => i.photo).map((i) => i.id));
+    update((s) => moveToArchive(s, ids));
+    void deletePhotos(photos);
+  },
+
   deleteList: (id: string) => {
     load();
     const list = state.lists[id];
@@ -408,6 +542,9 @@ export const actions = {
       },
     })),
 
+  markAltitudeSeen: (level: number) =>
+    update((s) => (s.seenAltitude !== undefined && s.seenAltitude >= level ? s : { ...s, seenAltitude: level })),
+
   markIntroSeen: (introId: string) =>
     update((s) =>
       s.seenIntros.includes(introId) ? s : { ...s, seenIntros: [...s.seenIntros, introId] }
@@ -476,17 +613,20 @@ export function useLists() {
 
 /** Lifetime totals: every saved list plus lists that were deleted. */
 export function useStats() {
-  const { lists, archive } = useAppState();
+  const { lists, archive, archived } = useAppState();
   const hydrated = useHydrated();
 
   return useMemo(() => {
-    const saved = Object.values(lists).filter((l) => !isBlank(l));
+    const active = Object.values(lists).filter((l) => !isBlank(l));
+    // Archived lists still count toward totals and postcards.
+    const saved = [...active, ...Object.values(archived ?? {})];
     const byDestination: Partial<Record<Destination, number>> = { ...archive?.byDestination };
     let kept = archive?.kept ?? 0;
     let letgo = archive?.letgo ?? 0;
     let gone = archive?.gone ?? 0;
     let sorted = (archive?.kept ?? 0) + (archive?.letgo ?? 0);
     let finished = archive?.finished ?? 0;
+    const postcards: Postcard[] = [...(archive?.postcards ?? [])];
     /** Let-go items not handled yet, per list, for reminders. */
     const waiting: { list: ListState; items: Item[] }[] = [];
 
@@ -496,7 +636,10 @@ export function useStats() {
       letgo += s.letgo.length;
       gone += s.handled;
       sorted += s.keep.length + s.letgo.length + s.maybe.length;
-      if (list.items.length > 0 && s.undecided.length === 0 && s.maybe.length === 0) finished += 1;
+      if (list.items.length > 0 && s.undecided.length === 0 && s.maybe.length === 0) {
+        finished += 1;
+        postcards.push(postcardFor(list));
+      }
       for (const item of s.letgo) {
         const o = list.outcomes[item.id];
         if (o?.done && o.destination) byDestination[o.destination] = (byDestination[o.destination] ?? 0) + 1;
@@ -517,6 +660,26 @@ export function useStats() {
       byDestination,
       waiting,
       waitingCount: waiting.reduce((n, w) => n + w.items.length, 0),
+      postcards: postcards.sort((a, b) => b.date - a.date),
     };
-  }, [lists, archive, hydrated]);
+  }, [lists, archive, archived, hydrated]);
+}
+
+/** Finished: everything sorted, no maybes left, and every let-go item gone. */
+export function isComplete(list: ListState) {
+  if (list.items.length === 0) return false;
+  const { undecided, maybe, letgo, handled } = summarize(list);
+  return undecided.length === 0 && maybe.length === 0 && handled === letgo.length;
+}
+
+/** Archived lists (newest first) and the auto-archive setting. */
+export function useArchived() {
+  const { archived, autoArchive } = useAppState();
+  return useMemo(
+    () => ({
+      archived: Object.values(archived ?? {}).sort((a, b) => b.archivedAt - a.archivedAt),
+      autoArchive: autoArchive ?? "off",
+    }),
+    [archived, autoArchive]
+  );
 }

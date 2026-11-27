@@ -3,6 +3,7 @@
 import { CardStack } from "@/components/Illustrations";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useState } from "react";
+import { BalloonScene, useAltitude } from "@/components/Balloon";
 import { EditableName } from "@/components/EditableName";
 import { Intro } from "@/components/Intro";
 import { Confetti, CountUp, ProgressBar, pop } from "@/components/motion";
@@ -19,6 +20,7 @@ export default function ResultsPage() {
   const { list, hydrated, undecided, keep, letgo, maybe } = useList();
   const handled = letgo.filter((i) => list.outcomes[i.id]?.done).length;
   const sorted = keep.length + letgo.length + maybe.length;
+  const altitude = useAltitude();
   // Confetti when the last item is ticked off now, not on every visit.
   const [justFinished, setJustFinished] = useState(false);
   // One group at a time: Let go / Keep / Maybe. Maybes first when there are
@@ -200,6 +202,17 @@ export default function ResultsPage() {
 
           {letgo.length > 0 ? (
             <Section title="Let go" count={letgo.length} tone="text-letgo">
+              <div className="mb-4 print:hidden">
+                <BalloonScene
+                  altitude={altitude}
+                  sandbags={letgo.length - handled}
+                  className="max-h-40"
+                  label={`Your balloon, with ${letgo.length - handled} sandbags to drop from this list`}
+                />
+                <p className="mt-1 text-xs opacity-70">
+                  Every item you tick off drops a sandbag. Let go to rise.
+                </p>
+              </div>
               <div className="mb-4">
                 <div className="mb-1 flex justify-between text-sm">
                   <span>Handled</span>

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import Script from "next/script";
+import { AltitudeWatcher } from "@/components/AltitudeWatcher";
+import { Housekeeping } from "@/components/Housekeeping";
 import { HeaderLinks, TabBar } from "@/components/Nav";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -35,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="theme" src="/theme-init.js" strategy="beforeInteractive" />
       </head>
       <body className="min-h-dvh">
-        <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 pt-5 sm:px-6 print:hidden">
+        <header className="relative z-10 mx-auto flex w-full max-w-[100rem] items-center justify-between px-4 pt-5 sm:px-6 lg:px-10 xl:px-16 print:hidden">
           <Link href="/" className="font-title text-4xl leading-none" aria-label="Minimize home">
             MNMZ
           </Link>
@@ -48,6 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pb-0">{children}</div>
         <TabBar />
         <Toaster />
+        <AltitudeWatcher />
+        <Housekeeping />
         <ServiceWorker />
       </body>
     </html>

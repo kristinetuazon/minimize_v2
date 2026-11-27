@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
 test("multiple lists: create, switch and delete", async ({ page }) => {
   await page.goto("/list");
   await page.getByRole("button", { name: "Closet" }).click();
-  await expect(page.getByText("8 items")).toBeVisible();
+  await expect(page.getByText("8 items", { exact: true })).toBeVisible();
 
   await page.goto("/");
   await page.getByRole("button", { name: "New list" }).click();
@@ -28,6 +28,8 @@ test("multiple lists: create, switch and delete", async ({ page }) => {
   await listsLink(page).click();
   await expect(page.getByRole("button", { name: /^closet/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /^bookshelf/i })).toBeVisible();
+  // The fleet: each list is a balloon you can open.
+  await expect(page.getByRole("link", { name: /^bookshelf: 0% of the way/i })).toBeVisible();
 
   // Open the first list again: unsorted, so it resumes at the sort step.
   await page.getByRole("button", { name: /^closet/i }).click();
@@ -51,8 +53,8 @@ test("a blank new list doesn't clutter the lists page", async ({ page }) => {
 
 test("photos: add, persist, show on the card, remove", async ({ page }) => {
   await page.goto("/list");
-  await page.getByLabel("Items").fill("Lamp");
-  await page.getByLabel("Items").press("Enter");
+  await page.getByLabel("Items", { exact: true }).fill("Lamp");
+  await page.getByLabel("Items", { exact: true }).press("Enter");
 
   await page.locator('input[type="file"]').setInputFiles({ name: "lamp.png", mimeType: "image/png", buffer: PNG });
   const thumb = page.locator("main li img");
@@ -73,10 +75,10 @@ test("export CSV and share an invite link that imports", async ({ page, context,
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/list");
   await page.getByLabel("Name of list").fill('Desk, "top" drawer');
-  await page.getByLabel("Items").fill("Stapler");
-  await page.getByLabel("Items").press("Enter");
-  await page.getByLabel("Items").fill("Pens");
-  await page.getByLabel("Items").press("Enter");
+  await page.getByLabel("Items", { exact: true }).fill("Stapler");
+  await page.getByLabel("Items", { exact: true }).press("Enter");
+  await page.getByLabel("Items", { exact: true }).fill("Pens");
+  await page.getByLabel("Items", { exact: true }).press("Enter");
   await page.getByRole("link", { name: /start sorting/i }).click();
   await page.getByRole("button", { name: /keep/i }).click();
   await expect(page.getByText("2 of 2")).toBeVisible();
@@ -107,7 +109,7 @@ test("export CSV and share an invite link that imports", async ({ page, context,
   const friend = await other.newPage();
   await friend.goto(link);
   await expect(friend.getByRole("heading", { name: 'Desk, "top" drawer' })).toBeVisible();
-  await expect(friend.getByText("2 items")).toBeVisible();
+  await expect(friend.getByText("2 items", { exact: true })).toBeVisible();
   await friend.getByRole("button", { name: /add & start sorting/i }).click();
   await expect(friend).toHaveURL(/\/sort$/);
   await expect(friend.getByText("1 of 2")).toBeVisible();
