@@ -107,7 +107,8 @@ const CONFETTI_COLORS = ["var(--keep)", "var(--letgo)", "var(--maybe)", "var(--c
 
 /** Fires a little burst of confetti from the element's centre when mounted. */
 export function Confetti({ pieces = 36 }: { pieces?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
+  // A <span>, so it's valid inside text elements like <p>.
+  const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const host = ref.current;
@@ -149,7 +150,7 @@ export function Confetti({ pieces = 36 }: { pieces?: number }) {
     return () => mm.revert();
   }, [pieces]);
 
-  return <div ref={ref} aria-hidden className="pointer-events-none absolute inset-0 overflow-visible" />;
+  return <span ref={ref} aria-hidden className="pointer-events-none absolute inset-0 block overflow-visible" />;
 }
 
 /** A bar that springs to `value / max`. GSAP owns its width. */

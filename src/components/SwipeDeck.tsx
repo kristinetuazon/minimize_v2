@@ -2,10 +2,11 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { QUESTIONS } from "@/lib/content";
+import { QUESTIONS, questionIndex } from "@/lib/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { actions, useList } from "@/lib/store";
 import type { Choice } from "@/lib/types";
+import { EmptyBox } from "./Illustrations";
 import { Confetti } from "./motion";
 import { Button, Card } from "./ui";
 import { SwipeCard, type Direction, type SwipeCardHandle } from "./SwipeCard";
@@ -52,8 +53,8 @@ export function SwipeDeck() {
     if (dir && topId) topRef.current?.fling(dir);
   }, [topId]);
 
-  const questionFor = (id: string) =>
-    QUESTIONS[Math.max(0, list.items.findIndex((i) => i.id === id)) % QUESTIONS.length]!;
+  const itemIds = list.items.map((i) => i.id);
+  const questionFor = (id: string) => QUESTIONS[questionIndex(itemIds, id)]!;
 
   const sortedCount = total - undecided.length;
 
@@ -112,6 +113,7 @@ export function SwipeDeck() {
   if (total === 0) {
     return (
       <Card reveal className="text-center">
+        <EmptyBox />
         <p className="mb-4 text-lg">Your list is empty. Add a few things first.</p>
         <Button href="/list">Make a list</Button>
       </Card>
@@ -189,7 +191,17 @@ export function SwipeDeck() {
 
   return (
     <div className="flex flex-col items-center gap-5">
-      <p ref={counterRef} className="font-heading text-sm uppercase" aria-live="polite">
+      {/* Progress through the round, as a thin bar above the deck. */}
+      <div aria-hidden className="h-1.5 w-full max-w-md overflow-hidden rounded-full bg-ink/10 lg:max-w-lg">
+        <div
+          className="h-full rounded-full bg-ink transition-[width] duration-500 ease-out"
+          style={{
+            // Main round: share sorted. Maybe / narrow-down rounds: share not left in this round.
+            width: `${((inMaybeRound || inTrimRound ? total - deck.length : sortedCount) / Math.max(1, total)) * 100}%`,
+          }}
+        />
+      </div>
+      <p ref={counterRef} className="-mt-2 font-heading text-sm uppercase" aria-live="polite">
         {inMaybeRound
           ? `Maybes · ${maybe.length} left`
           : inTrimRound
@@ -202,7 +214,7 @@ export function SwipeDeck() {
         </p>
       ) : null}
 
-      <div ref={deckRef} className="relative h-[22rem] w-full max-w-md">
+      <div ref={deckRef} className="relative h-[22rem] w-full max-w-md lg:h-[26rem] lg:max-w-lg">
         {deck
           .slice(0, STACK)
           .reverse()
@@ -235,7 +247,7 @@ export function SwipeDeck() {
           })}
       </div>
 
-      <div className="mt-4 grid w-full max-w-md grid-cols-3 gap-3">
+      <div className="mt-4 grid w-full max-w-md grid-cols-3 gap-3 lg:max-w-lg">
         <DeckButton label="Let go" hint="←" tone="letgo" onClick={() => swipe("left")} />
         <DeckButton
           label="Maybe"

@@ -1,3 +1,4 @@
+import { showTab } from "./helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 async function pasteItems(page: Page, text: string) {
@@ -62,8 +63,10 @@ test("list → sort → act, with maybe, undo and persistence", async ({ page })
 
   // Everything survives a reload.
   await page.reload();
+  await showTab(page, "Let go");
   await expect(page.getByLabel("Plan for Winter coat")).toHaveValue("donate");
   await expect(letGo.getByText("1 / 2")).toBeVisible();
+  await showTab(page, "Keep");
   const keep = page.locator("section", { has: page.getByRole("heading", { name: /^keep/i }) });
   await expect(keep.getByText("Jeans")).toBeVisible();
   await expect(keep.getByText("Sneakers")).toBeVisible();

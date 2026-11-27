@@ -41,7 +41,7 @@ export function Intro({
         {summary}
       </summary>
       <div ref={body}>
-        <div className="mt-3 space-y-3 leading-relaxed">{children}</div>
+        <div className="mt-3 max-w-prose space-y-3 leading-relaxed">{children}</div>
         <button
           type="button"
           className="mt-3 underline underline-offset-4"

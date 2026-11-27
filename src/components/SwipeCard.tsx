@@ -124,9 +124,20 @@ export function SwipeCard({ item, question, allowMaybe, reducedMotion, onDecide,
             ) : null}
           </div>
         ) : null}
+        {item.photo ? null : (
+          // A big faint initial so a photo-less card isn't an empty rectangle.
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-6 -bottom-28 font-title text-[18rem] leading-none text-ink/[0.07] uppercase select-none"
+          >
+            {name.trim().charAt(0)}
+          </span>
+        )}
         <h2
-          className={`relative text-right font-title leading-none break-words uppercase ${
-            item.photo ? "text-[clamp(2rem,8vw,2.75rem)]" : "mt-10 text-[clamp(2.5rem,10vw,3.75rem)]"
+          className={`relative font-title leading-none break-words uppercase ${
+            item.photo
+              ? "text-right text-[clamp(2rem,8vw,2.75rem)]"
+              : "my-auto text-center text-[clamp(2.5rem,10vw,3.75rem)]"
           }`}
         >
           {name}

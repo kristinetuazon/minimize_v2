@@ -1,3 +1,4 @@
+import { listsLink } from "./helpers";
 import { expect, test } from "@playwright/test";
 
 // 1×1 PNG
@@ -24,7 +25,7 @@ test("multiple lists: create, switch and delete", async ({ page }) => {
   await expect(page.getByLabel("Name of list")).toHaveValue("");
   await page.getByRole("button", { name: "Bookshelf" }).click();
 
-  await page.getByRole("link", { name: "Your lists" }).click();
+  await listsLink(page).click();
   await expect(page.getByRole("button", { name: /^closet/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /^bookshelf/i })).toBeVisible();
 
