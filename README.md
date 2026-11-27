@@ -8,27 +8,33 @@ Are you looking to declutter your closet or the unmentionable drawer you have in
 Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--Minimize aspires to help you sort through your things (clothes, books---anything) in two categories: yes and no.
 
 ## Features
-- List Creation
-- Sorting through a Created List (swipe, buttons, or ← / → keys, with undo)
-- Your list and decisions are saved in the browser, so a refresh doesn't lose them
+- **List** – name your list, add items one by one, paste a whole list at once, or start from a template
+- **Sort** – swipe cards right to keep, left to let go, up for maybe (or use the buttons / ← ↑ → keys), with undo and a second round for maybes
+- **Act** – pick a plan for each let-go item (donate, sell, give, recycle, throw away), tick it off, and track progress
+- Everything is saved in your browser, so a refresh doesn't lose your progress
+- Light and dark mode; respects reduced-motion settings
 
 ## Future Features
-- Profile creation
-- Images alongside the Lists
-- Having a collection of lists
-- Editing and Adding in List Items/Lists
-- Native iOS and Android App
+- Multiple saved lists
+- Photos for items
+- Export and share results
+- Installable web app (PWA)
+- Accounts and sync
 
 ## Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [Tailwind CSS](https://tailwindcss.com)
-- [react-tinder-card](https://github.com/3DJakob/react-tinder-card)
+- [Next.js](https://nextjs.org) (App Router) + React
+- [Tailwind CSS](https://tailwindcss.com) v4
+- [Motion](https://motion.dev) for the swipe cards
+- [Playwright](https://playwright.dev) for end-to-end tests
+
+## Fonts
+Petrona is licensed under the SIL Open Font License. **Holipop and Bargemo are free for personal use only** – buy commercial licenses (links in `Assets/*/Read Me !!!.txt`) or swap them in `src/app/fonts.ts` before any commercial launch.
 
 # Getting Started
 ## Prerequisites
-Node.js
-npm
+- Node.js 20.9+
+- npm
 
 
 ## Installing
@@ -60,3 +66,7 @@ If you would like to contribute to this project, please submit a pull request fo
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+- Run the end-to-end tests (uses your installed Google Chrome):
+
+```npm test```
