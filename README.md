@@ -9,7 +9,8 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 
 ## Features
 - List Creation
-- Sorting through a Created List
+- Sorting through a Created List (swipe, buttons, or ← / → keys, with undo)
+- Your list and decisions are saved in the browser, so a refresh doesn't lose them
 
 ## Future Features
 - Profile creation
@@ -21,10 +22,8 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 ## Tech Stack
 
 - [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- [react-tinder-card](https://github.com/3DJakob/react-tinder-card)
 
 # Getting Started
 ## Prerequisites
@@ -45,9 +44,9 @@ npm
 
 ```npm install```
 
--Start the development server:
+- Start the development server:
 
-```npm start```
+```npm run dev```
 
 ## Deployment
 This application is ready for deployment to any web server. Simply build the application using the following command:

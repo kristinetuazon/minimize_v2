@@ -1,17 +1,18 @@
 import React from "react";
 
 type Props = {
-  children?: JSX.Element | JSX.Element[] | string;
+  children?: React.ReactNode;
   title?: string;
 };
 
-export default function Box({ children, title }: Props) {
+export default function Container({ children, title }: Props) {
   return (
-    <div className="border-1 min-w-[90-vw] max-w-[450px] border-2 bg-supple p-10 ">
-      <h1 className="text-right font-title text-5xl uppercase md:text-4xl">
-        {title}
-      </h1>
-      <br />
+    <div className="w-[90vw] max-w-[450px] border-2 bg-supple p-10">
+      {title ? (
+        <h2 className="mb-6 break-words text-right font-title text-4xl uppercase md:text-5xl">
+          {title}
+        </h2>
+      ) : null}
       {children}
     </div>
   );
