@@ -17,7 +17,7 @@ Inspired by Marie Kondo&apos;s "what sparks joy" and the Minimalist lifestyle--M
 - **Installable** – add it to your home screen; it works offline
 - Everything is saved on your device (lists in localStorage, photos in IndexedDB) – nothing is uploaded
 - Playful GSAP animations (a cluttered title that tidies itself, cards dealt onto the table, confetti when you finish) – all switched off when your device asks for reduced motion
-- Light and dark mode
+- Night mode: follows your device, or flip it with the moon / sun button (remembered per device)
 
 ## Future Features
 - Accounts and sync across devices
