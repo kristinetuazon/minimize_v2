@@ -13,6 +13,11 @@ export default defineConfig({
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], channel: "chrome" } },
     { name: "mobile", use: { ...devices["Pixel 7"], channel: "chrome" } },
+    // With reduced motion, GSAP animations are skipped and content must still show.
+    {
+      name: "reduced-motion",
+      use: { ...devices["Desktop Chrome"], channel: "chrome", contextOptions: { reducedMotion: "reduce" } },
+    },
   ],
   webServer: {
     command: "npm run build && npx next start -p 3100",

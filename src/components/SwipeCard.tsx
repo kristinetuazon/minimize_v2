@@ -2,7 +2,8 @@
 
 import { animate, motion, useMotionValue, useTransform, type PanInfo } from "motion/react";
 import { useImperativeHandle, useRef } from "react";
-import type { Choice } from "@/lib/types";
+import { usePhotoUrl } from "@/lib/photos";
+import type { Choice, Item } from "@/lib/types";
 
 export type Direction = "left" | "right" | "up";
 export type SwipeCardHandle = {
@@ -15,7 +16,7 @@ const DISTANCE = 120; // px of drag that counts as a decision
 const VELOCITY = 600; // px/s flick that counts as a decision
 
 type Props = {
-  name: string;
+  item: Item;
   question: string;
   allowMaybe: boolean;
   reducedMotion: boolean;
@@ -23,7 +24,9 @@ type Props = {
   ref?: React.Ref<SwipeCardHandle>;
 };
 
-export function SwipeCard({ name, question, allowMaybe, reducedMotion, onDecide, ref }: Props) {
+export function SwipeCard({ item, question, allowMaybe, reducedMotion, onDecide, ref }: Props) {
+  const name = item.name;
+  const photoUrl = usePhotoUrl(item.id, item.photo);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const busy = useRef(false);
@@ -96,10 +99,22 @@ export function SwipeCard({ name, question, allowMaybe, reducedMotion, onDecide,
           Maybe
         </Stamp>
 
-        <h2 className="relative mt-10 text-right font-title text-[clamp(2.5rem,10vw,3.75rem)] leading-none break-words uppercase">
+        {item.photo ? (
+          <div className="relative -mx-6 -mt-6 mb-4 min-h-0 flex-1 border-b-2 border-ink bg-ink/10 sm:-mx-8 sm:-mt-8">
+            {photoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={photoUrl} alt="" draggable={false} className="absolute inset-0 size-full object-cover" />
+            ) : null}
+          </div>
+        ) : null}
+        <h2
+          className={`relative text-right font-title leading-none break-words uppercase ${
+            item.photo ? "text-[clamp(2rem,8vw,2.75rem)]" : "mt-10 text-[clamp(2.5rem,10vw,3.75rem)]"
+          }`}
+        >
           {name}
         </h2>
-        <p className="relative text-center text-lg italic">{question}</p>
+        <p className={`relative text-center italic ${item.photo ? "mt-2 text-base" : "text-lg"}`}>{question}</p>
       </div>
     </motion.div>
   );

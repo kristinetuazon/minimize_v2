@@ -64,3 +64,44 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * GSAP entrance animations: hide [data-reveal] elements until GSAP fades them
+ * in, so content doesn't flash first. Only when JS is running (the `js`
+ * class) and motion is welcome. If GSAP never runs, the fallback animation
+ * shows everything after 1.5s anyway.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal]:not([data-revealed]) {
+    visibility: hidden;
+    animation: reveal-fallback 0s 1.5s forwards;
+  }
+}
+@keyframes reveal-fallback {
+  to {
+    visibility: visible;
+  }
+}
+
+/* Printing the results: just the lists, on white. */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --ink: #000000;
+    --card: #ffffff;
+    --paper: #ffffff;
+  }
+  button,
+  select,
+  nav,
+  details {
+    display: none !important;
+  }
+  section {
+    break-inside: avoid;
+  }
+  [data-reveal] {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}

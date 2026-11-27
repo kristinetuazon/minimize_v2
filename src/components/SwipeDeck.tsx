@@ -3,8 +3,10 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { QUESTIONS } from "@/lib/content";
+import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { actions, useList } from "@/lib/store";
 import type { Choice } from "@/lib/types";
+import { Confetti } from "./motion";
 import { Button, Card } from "./ui";
 import { SwipeCard, type Direction, type SwipeCardHandle } from "./SwipeCard";
 
@@ -17,6 +19,10 @@ export function SwipeDeck() {
   // A swipe asked for while the previous card is still flying off.
   const queued = useRef<Direction | null>(null);
   const reducedMotion = useReducedMotion() ?? false;
+  // Confetti only when the last call is made now, not when reopening a finished list.
+  const [celebrate, setCelebrate] = useState(false);
+  const deckRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLParagraphElement>(null);
 
   // Unsorted items always come first; the maybe round starts only when asked.
   const inMaybeRound = undecided.length === 0 && reviewingMaybes;
@@ -34,6 +40,35 @@ export function SwipeDeck() {
 
   const questionFor = (id: string) =>
     QUESTIONS[Math.max(0, list.items.findIndex((i) => i.id === id)) % QUESTIONS.length]!;
+
+  const sortedCount = total - undecided.length;
+
+  // Deal the visible cards in whenever a round (re)starts.
+  const dealKey = !hydrated || !top ? "none" : inMaybeRound ? "maybe" : "main";
+  useGSAP(
+    () => {
+      if (dealKey === "none" || !deckRef.current || prefersReducedMotion()) return;
+      gsap.from(gsap.utils.toArray<HTMLElement>(".deal", deckRef.current).reverse(), {
+        y: 260,
+        x: () => gsap.utils.random(-60, 60),
+        rotation: () => gsap.utils.random(-25, 25),
+        autoAlpha: 0,
+        duration: 0.7,
+        ease: "back.out(1.2)",
+        stagger: 0.09,
+      });
+    },
+    { dependencies: [dealKey] }
+  );
+
+  // A little tick on the counter after every decision.
+  useGSAP(
+    () => {
+      if (!counterRef.current || prefersReducedMotion()) return;
+      gsap.fromTo(counterRef.current, { y: -6, scale: 1.15 }, { y: 0, scale: 1, duration: 0.4, ease: "back.out(3)" });
+    },
+    { dependencies: [sortedCount, maybe.length] }
+  );
 
   const swipe = useCallback((dir: Direction) => {
     if (topRef.current && !topRef.current.fling(dir)) queued.current = dir;
@@ -62,7 +97,7 @@ export function SwipeDeck() {
 
   if (total === 0) {
     return (
-      <Card className="text-center">
+      <Card reveal className="text-center">
         <p className="mb-4 text-lg">Your list is empty. Add a few things first.</p>
         <Button href="/list">Make a list</Button>
       </Card>
@@ -72,7 +107,8 @@ export function SwipeDeck() {
   if (!top) {
     const hasMaybes = maybe.length > 0;
     return (
-      <Card className="flex flex-col items-center gap-4 text-center">
+      <Card reveal className="relative flex flex-col items-center gap-4 text-center">
+        {celebrate && !hasMaybes ? <Confetti pieces={48} /> : null}
         <h2 className="font-title text-5xl uppercase">{hasMaybes ? "Almost there" : "All sorted"}</h2>
         <p className="text-lg">
           {hasMaybes
@@ -96,18 +132,20 @@ export function SwipeDeck() {
     );
   }
 
-  const decide = (id: string) => (choice: Choice) => actions.decide(id, choice);
-  const sortedCount = total - undecided.length;
+  const decide = (id: string) => (choice: Choice) => {
+    actions.decide(id, choice);
+    setCelebrate(true);
+  };
 
   return (
     <div className="flex flex-col items-center gap-5">
-      <p className="font-heading text-sm uppercase" aria-live="polite">
+      <p ref={counterRef} className="font-heading text-sm uppercase" aria-live="polite">
         {inMaybeRound
           ? `Maybes · ${maybe.length} left`
           : `${Math.min(sortedCount + 1, total)} of ${total}`}
       </p>
 
-      <div className="relative h-[22rem] w-full max-w-md">
+      <div ref={deckRef} className="relative h-[22rem] w-full max-w-md">
         {deck
           .slice(0, STACK)
           .reverse()
@@ -124,14 +162,17 @@ export function SwipeDeck() {
                 style={{ zIndex: STACK - depth, pointerEvents: isTop ? "auto" : "none" }}
                 aria-hidden={!isTop}
               >
-                <SwipeCard
-                  ref={isTop ? topRef : undefined}
-                  name={item.name}
-                  question={questionFor(item.id)}
-                  allowMaybe={!inMaybeRound}
-                  reducedMotion={reducedMotion}
-                  onDecide={decide(item.id)}
-                />
+                {/* GSAP deals this wrapper in; Motion owns the card's own transform. */}
+                <div className="deal absolute inset-0">
+                  <SwipeCard
+                    ref={isTop ? topRef : undefined}
+                    item={item}
+                    question={questionFor(item.id)}
+                    allowMaybe={!inMaybeRound}
+                    reducedMotion={reducedMotion}
+                    onDecide={decide(item.id)}
+                  />
+                </div>
               </motion.div>
             );
           })}

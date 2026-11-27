@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+import { gsap, prefersReducedMotion } from "@/lib/gsap";
 import { actions, useAppState, useHydrated } from "@/lib/store";
 
 /**
@@ -18,6 +20,7 @@ export function Intro({
   const { seenIntros } = useAppState();
   const hydrated = useHydrated();
   const seen = seenIntros.includes(id);
+  const body = useRef<HTMLDivElement>(null);
 
   return (
     <details
@@ -26,21 +29,27 @@ export function Intro({
       open={hydrated && !seen}
       onToggle={(e) => {
         if (!e.currentTarget.open) actions.markIntroSeen(id);
+        else if (!prefersReducedMotion() && body.current) {
+          gsap.from(body.current.children, { autoAlpha: 0, y: -8, duration: 0.35, stagger: 0.05, ease: "power2.out" });
+        }
       }}
+      data-reveal
       className="group rounded-md border-2 border-dashed border-ink/40 px-4 py-3"
     >
       <summary className="font-heading text-sm uppercase tracking-wide marker:content-none">
         <span className="inline-block transition group-open:rotate-90">›</span>{" "}
         {summary}
       </summary>
-      <div className="mt-3 space-y-3 leading-relaxed">{children}</div>
-      <button
-        type="button"
-        className="mt-3 underline underline-offset-4"
-        onClick={() => actions.markIntroSeen(id)}
-      >
-        Got it
-      </button>
+      <div ref={body}>
+        <div className="mt-3 space-y-3 leading-relaxed">{children}</div>
+        <button
+          type="button"
+          className="mt-3 underline underline-offset-4"
+          onClick={() => actions.markIntroSeen(id)}
+        >
+          Got it
+        </button>
+      </div>
     </details>
   );
 }

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRef } from "react";
+import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { useList } from "@/lib/store";
 
 export function Stepper() {
@@ -9,6 +11,24 @@ export function Stepper() {
   const { list } = useList();
   const hasItems = list.items.length > 0;
   const hasDecisions = Object.keys(list.decisions).length > 0;
+  const ref = useRef<HTMLElement>(null);
+
+  // The current step pops in, and the connectors leading to it draw across.
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+      gsap.from("[aria-current=step]", { scale: 0.6, duration: 0.6, delay: 0.15, ease: "back.out(2.5)" });
+      gsap.from("[data-connector=done]", {
+        scaleX: 0,
+        transformOrigin: "left center",
+        duration: 0.4,
+        delay: 0.1,
+        stagger: 0.12,
+        ease: "power2.out",
+      });
+    },
+    { scope: ref, dependencies: [pathname] }
+  );
 
   const steps = [
     { n: 1, label: "List", href: "/list", enabled: true },
@@ -17,7 +37,7 @@ export function Stepper() {
   ];
 
   return (
-    <nav aria-label="Steps">
+    <nav ref={ref} aria-label="Steps" data-reveal>
       <ol className="flex items-center gap-2 font-heading text-sm uppercase">
         {steps.map((step, i) => {
           const current = pathname === step.href;
@@ -32,14 +52,18 @@ export function Stepper() {
                 </Link>
               ) : (
                 <span
-                  className={`${pill} ${step.enabled ? "" : "opacity-40"}`}
+                  className={`${pill} ${step.enabled || current ? "" : "opacity-40"}`}
                   aria-current={current ? "step" : undefined}
                 >
                   <span>{step.n}</span> {step.label}
                 </span>
               )}
               {i < steps.length - 1 ? (
-                <span aria-hidden className="h-0.5 w-4 bg-ink/30" />
+                <span
+                  aria-hidden
+                  data-connector={steps.findIndex((s) => s.href === pathname) > i ? "done" : undefined}
+                  className={`h-0.5 w-4 ${steps.findIndex((s) => s.href === pathname) > i ? "bg-ink" : "bg-ink/30"}`}
+                />
               ) : null}
             </li>
           );
