@@ -1,52 +1,68 @@
-import React, { useContext } from "react";
+import React from "react";
+import { useRouter } from "next/router";
 import Container from "../../Components/Container";
-import GlobalContext from "../../Components/GlobalContext";
+import Button from "../../Components/Button";
+import { useList } from "../../Components/GlobalContext";
 import Arrow from "../../Components/Arrow";
 import FinalList from "../../Components/FinalList";
-import { type GlobalContextType } from "../../types/global";
-
 
 const Results = () => {
-  const value = useContext<GlobalContextType>(GlobalContext);
-  const { yesList, noList, LISTOBJECT } = value;
+  const router = useRouter();
+  const { state, yesList, noList, remaining, startOver } = useList();
+  const hasHeader = state.listName !== "" || state.description !== "";
+
+  function handleStartOver() {
+    if (!window.confirm("Clear this list and start a new one?")) return;
+    startOver();
+    void router.push("/list");
+  }
 
   return (
-    <>
-      <main>
-        <div className="flexCenter h-screen w-screen  bg-fadedPink">
-          <Container title={"Step Three"}>
-            <p className="text-center font-bodyRegular">
-              This is the final step of the process: this is the result of the
-              decision you made. Of course, for change to happen it will require
-              you to take action on the results you see.
-              <br />
-              <br />
-              For the things you decide to keep: cherish them and make them last
-              as long as you can.
-              <br />
-              <br /> For the things you decide to let go: instead of throwing
-              them. try donating them to charity, sell them online (if they are
-              still of good condition), or repurpose them.
-            </p>
+    <main>
+      <section className="flexCenter relative min-h-screen w-full py-24">
+        <Container title="Step Three">
+          <p className="text-center font-bodyRegular">
+            This is the final step of the process: this is the result of the
+            decision you made. Of course, for change to happen it will require
+            you to take action on the results you see.
+            <br />
+            <br />
+            For the things you decide to keep: cherish them and make them last
+            as long as you can.
+            <br />
+            <br /> For the things you decide to let go: instead of throwing
+            them away, try donating them to charity, selling them online (if
+            they are still in good condition), or repurposing them.
+          </p>
+        </Container>
+        <Arrow />
+      </section>
+      <section className="flexCenter min-h-screen w-full py-24">
+        {hasHeader ? (
+          <Container title={state.listName || "Your list"}>
+            {state.description ? (
+              <p className="text-center font-bodyRegular">{state.description}</p>
+            ) : null}
           </Container>
-          <Arrow />
+        ) : null}
+        <div className="flex flex-col md:flex-row md:gap-10">
+          <FinalList listName="Yes List" list={yesList} />
+          <FinalList listName="No List" list={noList} />
         </div>
-        <div className="flexCenter h-screen w-screen justify-center bg-fadedPink">
-        {(LISTOBJECT!.listName === "" && LISTOBJECT!.description === "")? "" : <Container title={LISTOBJECT!.listName}>
-            <p className="text-center font-bodyRegular">{LISTOBJECT!.description}</p>
-          </Container>}  
-          <div className="flex xxsm:flex-col xsm:flex-col sm:flex-col md:flex-row lg:flex-row ">
-            <div className="sm:h-max-[300px] xsm:h-max-[200px] xxsm:h-max-[200px] xxsm:overflow-scroll xsm:overflow-scroll sm:overflow-scroll md:mr-10 lg:mr-10">
-              <FinalList listName={"Yes List"} list={yesList!} />
-            </div>
-
-            <div className="sm:h-max-[300px] xsm:h-max-[200px] xxsm:h-max-[200px] xxsm:overflow-scroll xsm:overflow-scroll sm:overflow-scroll">
-              <FinalList listName={"No List"} list={noList!} />
-            </div>
-          </div>
+        {remaining.length > 0 ? (
+          <p className="mt-6 font-bodyRegular">
+            {remaining.length} item{remaining.length === 1 ? "" : "s"} still to
+            sort.
+          </p>
+        ) : null}
+        <div className="flex flex-wrap justify-center gap-4">
+          {remaining.length > 0 ? (
+            <Button page="/sort">keep sorting</Button>
+          ) : null}
+          <Button onClick={handleStartOver}>start a new list</Button>
         </div>
-      </main>
-    </>
+      </section>
+    </main>
   );
 };
 

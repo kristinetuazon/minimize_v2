@@ -11,6 +11,9 @@ module.exports = {
       xl: '1440px',
     },
     colors: {
+      transparent: "transparent",
+      current: "currentColor",
+      white: "#FFFFFF",
       blackish: "#2D2D2B",
       powder: "#F0E4D8",
       offWhite: "#F6F5F0",
